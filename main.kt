@@ -44,19 +44,41 @@ open class Entidade {
     }
 
     /**
-     *    Método para criar atributos e adicionar à lista de atributos da entidade
+     *    Método para criar atributos e adicionar à lista de atributos da entidade verificando que não existe um atributo com o mesmo nome
      */
     fun criarAtributo(novoAtributo: String, valor: String) {
-        val vAtributo = Atributo(novoAtributo, valor)
-        this.atributos.add(vAtributo)
+        val nomeAtributoExiste = this.atributos.any{ it.nomeatrib == novoAtributo }
+        if (nomeAtributoExiste) {
+            println("Já existe um atributo com esse nome!")
+        }
+        else{
+            val vAtributo = Atributo(novoAtributo, valor)
+            this.atributos.add(vAtributo)
+        }
     }
 
     /**
-     *    Método para adicionar atributos à entidade
+     *    Método para adicionar atributos à entidade verificando que não existe um atributo com o mesmo nome
      */
     fun criarAtributo2(novoAtributo: Atributo) {
-        //val vAtributo = Atributo(novoAtributo, valor)
-        this.atributos.add(novoAtributo)
+        val nomeAtributoExiste = this.atributos.any{ it.nomeatrib == novoAtributo.nomeatrib}
+        if (nomeAtributoExiste) {
+            println("Já existe um atributo com esse nome!")
+        }
+        else{
+            this.atributos.add(novoAtributo)
+        }
+    }
+
+    /**
+     *    Método para alterar valor de um atributo da entidade
+     */
+    fun alterarValorAtributo(nomeatrib: String, novoValor: String){
+        this.atributos.forEach {
+            if (it.nomeatrib == nomeatrib){
+                it.valor = novoValor
+            }
+        }
     }
 
     /**
@@ -76,21 +98,6 @@ open class Entidade {
             }
         }
     }
-
-    /*   fun criarAtributo(novoAtributo : String="", novoValor : String) : Entidade{
-    class Atributo {
-        var nomeatrib : String
-        var valor : String
-
-        constructor (nomeatrib : String="", nomevalor : String) {
-            this.nomeatrib = nomeatrib
-            this.valor = nomevalor
-
-        }
-    }
-    this.nomeatrib = novoAtributo
-}
-*/
 }
 
 class Atributo  {
@@ -102,13 +109,9 @@ class Atributo  {
         this.valor = valor
     }
 
-    /*
-    fun criarAtributo(novoAtrib: String, novoValor: String) {
-        this.nomeatrib = novoAtrib
-        this.valor = novoValor
-
+    fun alterarNome(novoNome: String) {
+        this.nomeatrib = novoNome
     }
-    */
 }
 
 fun criarFilhosPai(entidadePai: Entidade?, vararg filhos: Entidade) {
@@ -132,6 +135,9 @@ fun encontarEntidadeeFilhos(entidade: Entidade, nivel: Int = 0) {
     }
 }
 
+/**
+ * Método para remover recursivamente atributos pelo nome
+ */
 fun apagarAtributoGlobalNome(entidadePai: Entidade, vNome: String){
     entidadePai.atributos.removeIf { it.nomeatrib == vNome }
     // Chamar recursivamente a função para cada filho
@@ -140,7 +146,25 @@ fun apagarAtributoGlobalNome(entidadePai: Entidade, vNome: String){
     }
 }
 
+/**
+ * Método para alterar o nome recursivamente
+ */
+fun alterarAtributoGlobalNome(entidadePai: Entidade, nomeVelho : String, novoNome: String){
+    entidadePai.atributos.forEach {
+        if (it.nomeatrib == nomeVelho) {
+            it.nomeatrib = novoNome
+        }
+    }
+    // Chamar recursivamente a função para cada filho
+    for (filho in entidadePai.filhos) {
+        alterarAtributoGlobalNome(filho, nomeVelho, novoNome)
+    }
+}
 
+
+/**
+ * Método para renomear 1 atributo em todas as entidades que o tenham
+ */
 fun alterarNomeEntidade(entidadePai: Entidade, nomeAntigo: String, novoNome: String) {
     // Verificar se a entidade pai tem o nome antigo
     if (entidadePai.nome == nomeAntigo) {
@@ -152,6 +176,21 @@ fun alterarNomeEntidade(entidadePai: Entidade, nomeAntigo: String, novoNome: Str
         // Chamar recursivamente a função para cada filho
         alterarNomeEntidade(filho, nomeAntigo, novoNome)
     }
+}
+
+
+/**
+ * Método para criar um atributo numa entidade globalmente
+ */
+fun adicionarAtributoGlobalmente(entidade: Entidade, nomeatrib: String, valor: String) {
+    entidade.criarAtributo(nomeatrib, valor)
+}
+
+/**
+ * Método para apagar um atributo globalmente de uma entidade pelo nome
+ */
+fun removerAtributoGlobalmente(entidade: Entidade, nomeatrib: String){
+    entidade.apagarAtributoNome(nomeatrib)
 }
 
 fun apagarEntidadePorNome(entidadePai: Entidade?, nome: String) {
@@ -226,11 +265,11 @@ fun main() {
     val a1 = Atributo("codigo", "\"M4310\"")
     e1.criarAtributo2(a1)
     val a2 = Atributo("nome", "\"Quizzes\"")
-    e1.criarAtributo2(a2)
-    e2.criarAtributo2(a1)
-
-
-
+    e11.criarAtributo2(a2)
+//    a2.alterarNome("Teste")
+    val a3 = Atributo("codigo", "10")
+    e11.criarAtributo2(a3)
+    alterarAtributoGlobalNome(e1,"codigo", "novocodigo")
 
     criarFilhosPai(e1, e2, e3, e7)
     criarFilhosPai(e3, e4, e5, e6)
@@ -243,17 +282,17 @@ fun main() {
     println("A identidade ${e1.nome} tem os seguintes atributos:")
 
     e1.atributos.forEach {
-        println("O atributo é ${it.nomeatrib}")
+        println("O atributo do e1 é ${it.nomeatrib}")
     }
 
-    e2.atributos.forEach {
-        println("O atributo do e2 é ${it.nomeatrib}")
+    e11.atributos.forEach {
+        println("O atributo do e11 é ${it.nomeatrib}")
     }
 
     //Teste função apagar globalmente um atributo
-    apagarAtributoGlobalNome(e1,"codigo")
+    //apagarAtributoGlobalNome(e1,"codigo")
 
-    println("\nO atributo ${a1.nomeatrib} irá ser apagado!")
+    //println("\nO atributo ${a1.nomeatrib} irá ser apagado!")
     //e1.apagarAtributo(a1)
 
     // Teste função apagar atributo em entidade especifica por nome
@@ -261,7 +300,7 @@ fun main() {
     e1.atributos.forEach {
         println("O atributo do e1 é ${it.nomeatrib}")
     }
-    e2.atributos.forEach {
+    e11.atributos.forEach {
         println("O atributo do e2 é ${it.nomeatrib}")
     }
 
