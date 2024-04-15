@@ -87,7 +87,7 @@ open class Entidade {
      *
      * @param novosAtributos, Lista de atributos a serem criados
      */
-    fun criarAtributos(vararg novosAtributos: Atributo) {
+    fun adicionarAtributos(vararg novosAtributos: Atributo) {
         for (atributo in novosAtributos) {
             // Verifica se já existe um atributo com o mesmo nome
             val nomeAtributoExiste = this.atributos.any { it.nomeatrib == atributo.nomeatrib }
@@ -108,6 +108,21 @@ open class Entidade {
     fun apagarAtributo(apagarAtributo: Atributo) {
         this.atributos.remove(apagarAtributo)
     }
+
+    /**
+     * Apaga um atributo de uma entidade com base no nome do atributo
+     *
+     * @param nomeAtributo, nome do atributo a ser apagado
+     */
+    fun apagarAtributoNome(nomeAtributo: String) {
+        val iterator = this.atributos.iterator()
+        while (iterator.hasNext()) {
+            val atributo = iterator.next()
+            if (atributo.nomeatrib == nomeAtributo) {
+                iterator.remove()
+            }
+        }
+    }
 }
 
 
@@ -117,17 +132,17 @@ open class Entidade {
  *
  * @property nomeatrib, nome do atributo
  * @property valor, valor que o atributo pode ter
-*/
+ */
 class Atributo  {
     var nomeatrib: String = ""
     var valor: String = ""
 
     /**
-    * Cria uma nova instância de "Atributo" com o nome identificado e um valor associado
-    *
-    * @param nomeatrib, nome do atributo
-    * @param valor, valor do atributo
-    */
+     * Cria uma nova instância de "Atributo" com o nome identificado e um valor associado
+     *
+     * @param nomeatrib, nome do atributo
+     * @param valor, valor do atributo
+     */
     constructor(nomeatrib: String, valor: String) {
         this.nomeatrib = nomeatrib
         this.valor = valor
@@ -343,7 +358,7 @@ fun criarAtributoNomeEntidadeNomeAtributoGlobal(entidade: Entidade, nomeEntidade
     fun percorrerEntidadesGlobal(entidade: Entidade) {
         // Verifica se esta é a entidade que procurada
         if (entidade.nome == nomeEntidade) {
-           entidade.criarAtributo(nomeAtributo, valor)
+            entidade.criarAtributo(nomeAtributo, valor)
         }
         // Percorre os filhos recursivamente
         for (filho in entidade.filhos) {
@@ -642,46 +657,47 @@ fun main() {
     criarFilhosPai(e6, e7, e8)
     criarFilhosPai(e12, e13, e14,e15)
     //Criação de atributos (ponto 2 do exercicio)
-    e3.criarAtributos (a1)
-    e9.criarAtributos (a6)
-    e7.criarAtributos (a2, a3)
-    e8.criarAtributos (a4, a5)
-    e13.criarAtributos (a7, a8)
-    e14.criarAtributos (a9, a10)
-    e15.criarAtributos (a11, a12)
+    e3.adicionarAtributos (a1)
+    e9.adicionarAtributos (a6)
+    e7.adicionarAtributos (a2, a3)
+    e8.adicionarAtributos (a4, a5)
+    e13.adicionarAtributos (a7, a8)
+    e14.adicionarAtributos (a9, a10)
+    e15.adicionarAtributos (a11, a12)
 
- /*
-    //Exemplos de operações sobre entidades e atributos
-    //(ponto 1 do exercicio)
-    apagarEntidade(e9)
-    //(ponto 2 do exercicio)
-    e14.apagarAtributo(a9)
-    alterarAtributo(e3,"codigo", "Teste","M4100" )
-    // Altera um atributo para uma entidade especifica
-    alterarAtributoNomeEntidade(e1, "codigo","codigo2")
-    //(ponto 3 do exercicio)
-    acederEntidadMaeeFilhos(e9)
-    //(ponto 6 do exercicio)
-    criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "FUC", "code", "zzzzz")
-    //(ponto 7 do exercicio)
-    alterarNomeEntidade(e1,"FUC", "FUCnovo")
-    //(ponto 8 do exercicio)
-    alterarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo","codigo2")
-    //(ponto 9 do exercicio)
-    apagarEntidadePorNome(e1,"FUCnovo")
-    //(ponto 10 do exercicio)
-    apagarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo")
-    //(Dois exercicio não solicitados em nenhum ponto do trabalho)
-       //Apagar atributo globalmente só por nome de atributo
-    apagarAtributoGlobalNome(e1,"codigo")
-      //Alterar atributo globalmente só por nome de atributo
-    alterarAtributoNomeEntidade(e1, "codigo","codigo2")
-    //(ponto 5 do exercicio), foi implementado o visitor para os pontos 6.
-    apagarEntidadePorNomeV(e1,"FUC")
-   // Chamada da função XPath para pesquisa de expressões"
-    val resultados = encontrarEntidadesPorXPath(e1, "FUC/etcs")
-    imprimirResultados(resultados )
-*/
+
+    /*
+       //Exemplos de operações sobre entidades e atributos
+       //(ponto 1 do exercicio)
+       apagarEntidade(e9)
+       //(ponto 2 do exercicio)
+       e14.apagarAtributo(a9)
+       alterarAtributo(e3,"codigo", "Teste","M4100" )
+       // Altera um atributo para uma entidade especifica
+       alterarAtributoNomeEntidade(e1, "codigo","codigo2")
+       //(ponto 3 do exercicio)
+       acederEntidadMaeeFilhos(e9)
+       //(ponto 6 do exercicio)
+       criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "FUC", "code", "zzzzz")
+       //(ponto 7 do exercicio)
+       alterarNomeEntidade(e1,"FUC", "FUCnovo")
+       //(ponto 8 do exercicio)
+       alterarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo","codigo2")
+       //(ponto 9 do exercicio)
+       apagarEntidadePorNome(e1,"FUCnovo")
+       //(ponto 10 do exercicio)
+       apagarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo")
+       //(Dois exercicio não solicitados em nenhum ponto do trabalho)
+          //Apagar atributo globalmente só por nome de atributo
+       apagarAtributoGlobalNome(e1,"codigo")
+         //Alterar atributo globalmente só por nome de atributo
+       alterarAtributoNomeEntidade(e1, "codigo","codigo2")
+       //(ponto 5 do exercicio), foi implementado o visitor para os pontos 6.
+       apagarEntidadePorNomeV(e1,"FUC")
+      // Chamada da função XPath para pesquisa de expressões"
+       val resultados = encontrarEntidadesPorXPath(e1, "FUC/etcs")
+       imprimirResultados(resultados )
+   */
 
     //(ponto 4 do exercicio)
     // Escreve a estrutura da árvore de entidades e atributos em um StringBuilder como XML
