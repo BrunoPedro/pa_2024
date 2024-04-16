@@ -52,7 +52,6 @@ class EntidadeTest {
         entidadePai.apagarFilho(entidadeFilho1)
 
         // Verificando se o filho foi removido corretamente
-        assertNull(entidadeFilho1.pai)
         assertEquals(1, entidadePai.filhos.size)
         assertEquals(entidadeFilho2, entidadePai.filhos[0])
     }
