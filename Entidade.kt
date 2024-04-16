@@ -109,20 +109,6 @@ open class Entidade {
         this.atributos.remove(apagarAtributo)
     }
 
-    /**
-     * Apaga um atributo de uma entidade com base no nome do atributo
-     *
-     * @param nomeAtributo, nome do atributo a ser apagado
-     */
-    fun apagarAtributoNome(nomeAtributo: String) {
-        val iterator = this.atributos.iterator()
-        while (iterator.hasNext()) {
-            val atributo = iterator.next()
-            if (atributo.nomeatrib == nomeAtributo) {
-                iterator.remove()
-            }
-        }
-    }
 }
 
 
