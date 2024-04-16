@@ -4,319 +4,469 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
+/**
+ * Class para os testes unitários
+ */
+class UnitTests {
 
-class EntidadeTest {
-
+    /**
+     * Função para testar a criação da entidade pai
+     */
     @Test
     fun testCriarPai() {
-        // Criando algumas instâncias de Entidade
+        // Inicializar objetos entidade
         val entidadePai = Entidade("Pai")
         val entidadeFilho1 = Entidade("Filho 1")
 
-        // Estabelecendo uma relação pai-filho usando a função criarPai
+        // Estabelecer a relação pai-filho usando a função criarPai
         entidadeFilho1.criarPai(entidadePai)
 
-        // Verificando se a referência para o pai foi configurada corretamente
+        // Verificar se a referência para o pai foi configurada corretamente
         assertEquals(entidadePai, entidadeFilho1.pai)
     }
 
+    /**
+     * Função para testar a criação de uma entidade filho
+     */
     @Test
     fun testCriarFilho() {
-        // Criando algumas instâncias de Entidade
+        // Inicializar objetos entidade
         val entidadePai = Entidade("Pai")
         val entidadeFilho1 = Entidade("Filho 1")
 
-        // Estabelecendo uma relação pai-filho usando a função criarFilho
+        // Estabelecer a relação pai-filho usando a função criarFilho
         entidadePai.criarFilho(entidadeFilho1)
 
-        // Verificando se a referência para o pai foi configurada corretamente no filho
+        // Verificar se a referência para o pai foi configurada corretamente no filho
         assertEquals(entidadePai, entidadeFilho1.pai)
 
-        // Verificando se o filho foi adicionado corretamente à lista de filhos do pai
+        // Verificar se o filho foi adicionado corretamente à lista de filhos do pai
         assertEquals(1, entidadePai.filhos.size)
         assertEquals(entidadeFilho1, entidadePai.filhos[0])
     }
 
+    /**
+     * Teste para criar múltiplos filhos a uma entidade pai
+     */
     @Test
-    fun testApagarFilho() {
-        // Criando algumas instâncias de Entidade
-        val entidadePai = Entidade("Pai")
-        val entidadeFilho1 = Entidade("Filho 1")
-        val entidadeFilho2 = Entidade("Filho 2")
+    fun testCriarFilhosPai() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("Pai")
+        val e2 = Entidade("Filho1")
+        val e3 = Entidade("Filho2")
 
-        // Adicionando os filhos à lista de filhos do pai
-        entidadePai.criarFilho(entidadeFilho1)
-        entidadePai.criarFilho(entidadeFilho2)
+        // Adicionar as entidades filhas à entidade pai
+        criarFilhosPai(e1, e2, e3)
 
-        // Apagando um filho da lista de filhos do pai
-        entidadePai.apagarFilho(entidadeFilho1)
-
-        // Verificando se o filho foi removido corretamente
-        assertEquals(1, entidadePai.filhos.size)
-        assertEquals(entidadeFilho2, entidadePai.filhos[0])
+        // Verificar se as entidades filhas foram adicionadas corretamente à entidade pai
+        assertTrue(e1.filhos.contains(e2))
+        assertTrue(e1.filhos.contains(e3))
     }
 
+    /**
+     * Função para testar a remoção de entidades filho
+     */
+    @Test
+    fun testApagarFilho() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("Pai")
+        val e2 = Entidade("Filho1")
+        val e3 = Entidade("Filho2")
+
+        // Adicionar os filhos à lista de filhos do pai
+        e1.criarFilho(e2)
+        e1.criarFilho(e3)
+
+        // Apagar um filho da lista de filhos do pai
+        e1.apagarFilho(e2)
+
+        // Verificar se o filho foi removido corretamente
+        assertEquals(1, e1.filhos.size)
+        assertEquals(e3, e1.filhos[0])
+    }
+
+
+    /**
+     * Teste para remover uma entidade pelo nome
+     */
+    @Test
+    fun testApagarEntidadePorNome() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("Entidade1")
+        val e2 = Entidade("Entidade2")
+        val e3 = Entidade("Entidade3")
+        val e4 = Entidade("Entidade4")
+
+        // Adicionar os filhos à lista de filhos do pai
+        e1.criarFilho(e2)
+        e2.criarFilho(e3)
+        e3.criarFilho(e4)
+
+        // Verificar se os filhos forem corretamente adicionados
+        assertTrue(e1.filhos.contains(e2))
+        assertTrue(e2.filhos.contains(e3))
+        assertTrue(e3.filhos.contains(e4))
+
+        // Remover uma entidade
+        apagarEntidadePorNome(e1, "Entidade2")
+
+        // Verificar se a entidade foi removida corretamente
+        assertFalse(e1.filhos.contains(e2))
+    }
+
+
+    /**
+     * Teste para remover uma entidade
+     */
+    @Test
+    fun testApagarEntidade() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("pai")
+        val e2 = Entidade("filho1")
+        val e3 = Entidade("filho2")
+        val e4 = Entidade("filho3")
+
+        // Adicionar os filhos à lista de filhos do pai
+        e1.criarFilho(e2)
+        e2.criarFilho(e3)
+        e3.criarFilho(e4)
+
+        // Verificar se os filhos foram corretamente adicionados
+        assertTrue(e1.filhos.contains(e2))
+        assertTrue(e2.filhos.contains(e3))
+        assertTrue(e3.filhos.contains(e4))
+
+        // Remover a entidade e3
+        apagarEntidade(e3)
+
+        // Verificar se a entidade foi removida corretamente
+        assertFalse(e2.filhos.contains(e3))
+    }
+
+    /**
+     *  Teste para remover todas as entidades que têm nomes que começam com o prefixo identificado
+     */
+    @Test
+    fun testApagarEntidadePorNomeV() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("pai")
+        val e2 = Entidade("filho1")
+        val e3 = Entidade("filho2")
+
+        // Adicionar os filhos à lista de filhos do pai
+        criarFilhosPai(e1, e2, e3)
+
+        // Remover todos os filhos cujo nome comece por f
+        apagarEntidadePorNomeV(e1, "f")
+
+        // Verificar se as entidades foram removidas
+        assertEquals(0, e1.filhos.size)
+        assertFalse(e1.filhos.any { it.nome.startsWith("f") })
+    }
+
+    /**
+     * Teste para alterar o nome de uma entidade
+     */
+    @Test
+    fun testAlterarNomeEntidade() {
+        // Inicializar objeto entidade
+        val entidade = Entidade("nomeOriginal")
+
+        // Alterar o nome da entidade
+        alterarNomeEntidade(entidade,"nomeOriginal","nomeNovo")
+
+        // Verificar se o nome da entidade foi alterado corretamente
+        assertEquals("nomeNovo", entidade.nome)
+    }
+
+    /**
+     * Função para testar a criação de um atributo
+     */
     @Test
     fun testCriarAtributo() {
-        // Criando uma instância de Entidade
+        // Inicializar objeto entidade
         val entidade = Entidade("Entidade")
 
-        // Adicionando o atributo à lista de atributos da entidade
+        // Adicionar um objeto atributo à lista de atributos da entidade
         entidade.criarAtributo("Atributo", "Valor")
 
-        // Verificando se o atributo foi adicionado corretamente
+        // Verificar se o atributo foi adicionado corretamente
         assertEquals(1, entidade.atributos.size)
         assertEquals("Atributo", entidade.atributos[0].nomeatrib)
         assertEquals("Valor", entidade.atributos[0].valor)
     }
 
+    /**
+     * Teste para garantir que uma entidade não tem dois atributos com o mesmo nome
+     */
     @Test
     fun testCriarAtributoNomeDuplicado() {
-        // Criando uma instância de Entidade
+        // Inicializar objeto entidade
         val entidade = Entidade("Entidade")
 
-        // Adicionando o atributo à lista de atributos da entidade
+        // Adicionar objetos atributo à lista de atributos da entidade
         entidade.criarAtributo("Atributo1", "Valor")
         entidade.criarAtributo("Atributo2", "Valor2")
         entidade.criarAtributo("Atributo1", "Valor3")
 
 
-        // Verificando se o atributo duplicado não foi adicionado
+        // Verificar se o atributo duplicado não foi adicionado
         assertEquals(2, entidade.atributos.size)
         assertEquals("Atributo1", entidade.atributos[0].nomeatrib)
         assertEquals("Atributo2", entidade.atributos[1].nomeatrib)
     }
 
+    /**
+     * Teste para adicionar vários atributos simultaneamente
+     */
     @Test
     fun testAdicionarAtributos() {
-        // Criando uma instância de Entidade
+        // Inicializar objeto entidade
         val entidade = Entidade("Entidade")
 
-        // Criando uma lista de atributos
+        // Inicializar objetos atributo
         val atributo1 = Atributo("Atributo1", "Valor1")
         val atributo2 = Atributo("Atributo2", "Valor2")
         val atributo3 = Atributo("Atributo3", "Valor3")
 
 
-        // Adicionando os atributos à entidade
+        // Adicior os atributos à entidade
         entidade.adicionarAtributos(atributo1,atributo2,atributo3)
 
-        // Verificando se os atributos foram adicionados corretamente
+        // Verificar se os atributos foram adicionados corretamente
         assertEquals(3, entidade.atributos.size)
         assertEquals(atributo1, entidade.atributos[0])
         assertEquals(atributo2, entidade.atributos[1])
         assertEquals(atributo3, entidade.atributos[2])
     }
 
+    /**
+     * Teste para garantir que uma entidade não tem dois atributos com o mesmo nome
+     */
     @Test
     fun testAdicionarAtributosNomeDuplicado() {
-        // Criando uma instância de Entidade
+        // Inicializar objeto entidade
         val entidade = Entidade("Entidade")
 
-        // Criando uma lista de atributos com um nome duplicado
-
+        // Inicializar objetos atributo
         val atributo1 = Atributo("Atributo1", "Valor1")
         val atributo2 = Atributo("Atributo2", "Valor2")
         val atributo3 = Atributo("Atributo1", "Valor3")  // Nome duplicado
 
-
-        // Adicionando os atributos à entidade
+        // Adicionar os atributos à entidade
         entidade.adicionarAtributos(atributo1,atributo2,atributo3)
 
-        // Verificando se o atributo duplicado não foi adicionado
+        // Verificar se o atributo duplicado não foi adicionado
         assertEquals(2, entidade.atributos.size)
         assertEquals("Atributo1", entidade.atributos[0].nomeatrib)
         assertEquals("Atributo2", entidade.atributos[1].nomeatrib)
     }
 
+    /**
+     * Teste para apagar um atributo
+     */
     @Test
     fun testApagarAtributo() {
-        // Criando uma instância de Entidade
+        // Inicializar objeto entidade
         val entidade = Entidade("Entidade")
 
-        // Criando uma lista de atributos
+        // Inicializar objetos atributo
         val atributo1 = Atributo("Atributo1", "Valor1")
         val atributo2 = Atributo("Atributo2", "Valor2")
         val atributo3 = Atributo("Atributo3", "Valor3")
 
 
-        // Adicionando os atributos à entidade
+        // Adicionar os atributos à entidade
         entidade.adicionarAtributos(atributo1,atributo2,atributo3)
 
-        // Removendo um atributo específico
+        // Remover um atributo específico
         entidade.apagarAtributo(atributo2)
 
-        // Verificando se o atributo foi removido corretamente
+        // Verificar se o atributo foi removido corretamente
         assertEquals(2, entidade.atributos.size)
         assertEquals("Atributo1", entidade.atributos[0].nomeatrib)
         assertEquals("Atributo3", entidade.atributos[1].nomeatrib)
     }
 
-    @Test
-    fun testApagarAtributoNome() {
-        // Criando uma instância de Entidade
-        val entidade = Entidade("Entidade")
-
-        // Criando atributos
-        entidade.criarAtributo("Atributo1", "Valor1")
-        entidade.criarAtributo("Atributo2", "Valor2")
-        entidade.criarAtributo("Atributo3", "Valor3")
-
-        // Removendo um atributo específico pelo nome
-        entidade.apagarAtributoNome("Atributo2")
-
-        // Verificando se o atributo foi removido corretamente
-        assertEquals(2, entidade.atributos.size)
-        assertEquals("Atributo1", entidade.atributos[0].nomeatrib)
-        assertEquals("Atributo3", entidade.atributos[1].nomeatrib)
-    }
-
-    @Test
-    fun testCriarFilhosPai() {
-        // Criando uma instância de Entidade
-        val entidadePai = Entidade("Entidade Pai")
-        val entidadeFilha1 = Entidade("Entidade Filha 1")
-        val entidadeFilha2 = Entidade("Entidade Filha 2")
-
-        // Adicionando as entidades filhas à entidade pai
-        criarFilhosPai(entidadePai, entidadeFilha1, entidadeFilha2)
-
-        // Verificando se as entidades filhas foram adicionadas corretamente à entidade pai
-        assertTrue(entidadePai.filhos.contains(entidadeFilha1))
-        assertTrue(entidadePai.filhos.contains(entidadeFilha2))
-    }
-
-    @Test
-    fun testAlterarNomeEntidade() {
-        // Criando uma instância de Entidade
-        val entidade = Entidade("nomeAntigo")
-
-        // Alterando o nome da entidade
-        alterarNomeEntidade(entidade,"nomeAntigo","nomeNovo")
-
-        // Verificando se o nome da entidade foi alterado corretamente
-        assertEquals("nomeNovo", entidade.nome)
-    }
-
-    @Test
-    fun testApagarEntidadePorNome() {
-        // Criando a hierarquia de entidades para teste
-        val plano = Entidade("plano")
-        val curso = Entidade("curso")
-        val disciplina = Entidade("disciplina")
-        val avaliacao = Entidade("avaliacao")
-
-        plano.criarFilho(curso)
-        curso.criarFilho(disciplina)
-        disciplina.criarFilho(avaliacao)
-
-        assertTrue(plano.filhos.contains(curso))
-        assertTrue(curso.filhos.contains(disciplina))
-        assertTrue(disciplina.filhos.contains(avaliacao))
-
-        // Removendo a entidade disciplina
-        apagarEntidadePorNome(plano, "disciplina")
-
-        // Verificando se a entidade foi removida corretamente
-        assertFalse(curso.filhos.contains(disciplina))
-    }
-
-
-    @Test
-    fun testApagarEntidade() {
-        // Criando a hierarquia de entidades para teste
-        val plano = Entidade("plano")
-        val curso = Entidade("curso")
-        val disciplina = Entidade("disciplina")
-        val avaliacao = Entidade("avaliacao")
-
-        plano.criarFilho(curso)
-        curso.criarFilho(disciplina)
-        disciplina.criarFilho(avaliacao)
-
-        assertTrue(plano.filhos.contains(curso))
-        assertTrue(curso.filhos.contains(disciplina))
-        assertTrue(disciplina.filhos.contains(avaliacao))
-
-        // Removendo a entidade disciplina
-        apagarEntidade(disciplina)
-
-        // Verificando se a entidade foi removida corretamente
-        assertFalse(curso.filhos.contains(disciplina))
-    }
-
+    /**
+     * Teste para apagar um atributo pelo seu nome globalmente
+     */
     @Test
     fun testApagarAtributoGlobalNome() {
+        // Inicializar objetos entidade
         val e1 = Entidade("plano")
         val e2 = Entidade("curso", "Mestrado de Engenharia Informática")
         val e3 = Entidade("FUC")
 
-        // Criação de instâncias da classe Atributo com diferentes valores para os campos nomeatrib e valor
-        val a1 = Atributo("codigo", "M4310")
-        val a2 = Atributo("nome", "Quizzes")
+        // Inicializar objetos atributo
+        val a1 = Atributo("atributo1", "valor1")
+        val a2 = Atributo("atributo2", "valor2")
 
+        // Adicionar os filhos à lista de filhos do pai
         criarFilhosPai(e1, e2, e3)
 
+        // Adicionar os atributos às entidades
         e1.adicionarAtributos(a1)
         e2.adicionarAtributos(a1)
         e3.adicionarAtributos(a1,a2)
 
-        apagarAtributoGlobalNome(e1,"codigo")
+        // Remover um atributo pelo nome
+        apagarAtributoGlobalNome(e1,"atributo1")
 
+        // Verificar se o atributo foi removido globalemente
         assertTrue(e1.atributos == emptyList<Atributo>())
         assertTrue(e2.atributos == emptyList<Atributo>())
         assertEquals(1, e3.atributos.size)
-        assertTrue(e3.atributos[0].nomeatrib == "nome")
+        assertTrue(e3.atributos[0].nomeatrib == "atributo2")
 
     }
 
+    /**
+     * Teste para alterar um atributo
+     */
     @Test
     fun testalterarAtributo() {
+        // Inicializar objeto entidade
         val entidade = Entidade("Entidade")
+
+        // Inicializar objeto atributo
         val atributo = Atributo("nomeAtributo", "valorInicial")
 
+        // Adicionar o atributo à entidade
         entidade.adicionarAtributos(atributo)
 
-        // alterar o nome e o valor do atributo
+        // Alterar o nome e o valor do atributo
         alterarAtributo(entidade,"nomeAtributo","novoNome","novoValor")
 
+        // Verificar se o nome e o valor foram corretamente alterados
         assertTrue(entidade.atributos[0].nomeatrib == "novoNome")
         assertTrue(entidade.atributos[0].valor == "novoValor")
 
     }
 
 
+    /**
+     *  Teste para remover um atributo de uma entidade com base no nome da entidade e do atributo
+     */
+    @Test
+    fun testApagarAtributoNomeEntidadeNomeAtributoGlobal() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("pai")
+        val e2 = Entidade("filho1")
+
+        // Inicializar objetos atributo
+        val a1 = Atributo("atributo1", "valor1")
+        val a2 = Atributo("atributo2", "valor2")
+
+        // Adicionar o filho à lista de filhos do pai
+        criarFilhosPai(e1, e2)
+
+        // Adicionar os atributos à entidade
+        e2.adicionarAtributos(a1, a2)
+
+        // Remover um atributo numa dada entidade pelo nome
+        apagarAtributoNomeEntidadeNomeAtributoGlobal(e1, "filho1", "atributo1")
+
+        // Verificar se o atributo foi removido
+        assertEquals(1, e2.atributos.size)
+        assertEquals("atributo2", e2.atributos[0].nomeatrib)
+    }
+
+    /**
+     * Teste para garantir que o nome de um atributo é alterado em todas as entidades descendentes da entidade pai
+     */
+    @Test
+    fun testAlterarAtributoNomeEntidadeNomeAtributoGlobal() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("entidade1")
+        val e2 = Entidade("entidade2", "texto2")
+
+        // Inicializar objetos atributo
+        val a1 = Atributo("atributo1", "valor1")
+        val a2 = Atributo("atributo2", "valor2")
+
+        // Adicionar o filho à lista de filhos do pai
+        criarFilhosPai(e1, e2)
+
+        // Adicionar os atributos à entidade
+        e1.adicionarAtributos(a1, a2)
+        e2.adicionarAtributos(a1)
+
+        // Alterar nome do atributo de uma entidade específica
+        alterarAtributoNomeEntidadeNomeAtributoGlobal(e1, "entidade1", "atributo1", "novoNome")
+
+        // Verificar se o nome foi corretamente alterado
+        assertEquals("novoNome", e1.atributos[0].nomeatrib)
+        assertEquals("novoNome", e1.atributos[0].nomeatrib)
+    }
+
+    /**
+     *  Teste para garantir a criação um novo atributo numa entidade específica
+     */
+    @Test
+    fun testCriarAtributoNomeEntidadeNomeAtributoGlobal() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("entidade1")
+        val e2 = Entidade("entidade2")
+        val e3 = Entidade("entidade3")
+
+        // Adicionar os filhos à lista de filhos do pai
+        criarFilhosPai(e1, e2, e3)
+
+        // Criar um novo atributo globalmente numa dada entidade
+        criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "entidade1", "novoAtributo", "valorNovoAtributo")
+
+        //Verificar se o atributo foi corretamente criado nessa entidade
+        val createdAttribute = e1.atributos.find { it.nomeatrib == "novoAtributo" }
+        assertEquals("valorNovoAtributo", createdAttribute?.valor)
+    }
+
+    /**
+     * Teste para garantir que o formato xml e os conteúdos estão corretos
+     */
     @Test
     fun testEscreverString() {
-
+        // Inicializar objeto entidade
         val entidade = Entidade("Nome", "texto")
+
+        // Inicializar o stringBuilder
         val stringBuilder = StringBuilder()
 
+        // Escrever a representação XML da entidade e dos seus filhos
         escreverString(entidade, 0, stringBuilder)
         val resultado = stringBuilder.toString()
 
-        assertEquals("<"+ entidade.nome + ">" + entidade.texto + "</"+ entidade.nome + ">\n", resultado)
+        // Resultado esperado
+        val valorEsperado = "<"+ entidade.nome + ">" + entidade.texto + "</"+ entidade.nome + ">\n"
+
+        // Verificar se a representação XML corresponde ao esperado
+        assertEquals(valorEsperado, resultado)
     }
 
+    /**
+     * Teste para garantir que ficheiro xml é criado
+     */
     @Test
     fun testEscreverFicheiro() {
-
+        // // Inicializar o stringBuilder
         val stringBuilder = StringBuilder()
 
-
-        //(ponto 4 do exercicio)
-        // Escreve o conteúdo do StringBuilder em um ficheiro XML
+        // Escrever o conteúdo do StringBuilder em um ficheiro XML
         val ficheiro = File("projeto.xml")
         val tipo = "UTF-8"
         val versão = "2.0"
         escreverFicheiro(ficheiro, tipo, versão,stringBuilder)
 
+        // Verificar se o ficheiro foi criado
         assertTrue(ficheiro.exists())
     }
 
-
+    /**
+     * Teste para garantir que o XPath vai buscar a informação correta
+     */
     @Test
     fun testXPath() {
+        // Inicializar objetos entidade
         val e1 = Entidade("plano")
         val e2 = Entidade("curso", "Mestrado de Engenharia Informática")
         val e3 = Entidade("FUC")
@@ -332,7 +482,8 @@ class EntidadeTest {
         val e13 = Entidade("componente")
         val e14 = Entidade("componente")
         val e15 = Entidade("componente")
-        // Criação de instâncias da classe Atributo com diferentes valores para os campos nomeatrib e valor
+
+        // Inicializar objetos atributo
         val a1 = Atributo("codigo", "M4310")
         val a2 = Atributo("nome", "Quizzes")
         val a3 = Atributo("peso", "20%")
@@ -372,13 +523,20 @@ class EntidadeTest {
         assertTrue(esperado == resultados.joinToString("") { "<${it.first.nome}>${it.first.texto}</${it.first.nome}>\n" })
     }
 
+    /**
+     * Teste para imprimir as entidades e os seus atributos no formato XML, referente à lista de resultados
+     */
     @Test
     fun testImprimirResultados() {
-        // Create some sample entities and attributes
+        // Inicializar objetos entidade
         val e1 = Entidade("entidade1")
+        val e2 = Entidade("entidade2", "texto2")
+
+        // Inicializar objetos atributo
         val a1 = Atributo("atributo1", "valor1")
         val a2 = Atributo("atributo2", "valor2")
-        val e2 = Entidade("entidade2", "texto2")
+
+        // Criar lista de resultados
         val resultados = listOf(
             Pair(e1, listOf(a1, a2)),
             Pair(e2, emptyList())
@@ -387,11 +545,83 @@ class EntidadeTest {
         val outputStreamCaptor = ByteArrayOutputStream()
         System.setOut(PrintStream(outputStreamCaptor))
 
+        // Escrever os resultados
         imprimirResultados(resultados)
 
+
+        // Verificar se os resultados obtidos foram os esperados
         val expectedOutput = "<entidade1 atributo1=\"valor1\" atributo2=\"valor2\"/>\n<entidade2>texto2</entidade2>\n"
         val actualOutput = outputStreamCaptor.toString().replace("\r\n", "\n")
         assertEquals(expectedOutput, actualOutput)
     }
 
+    /**
+     * Teste para alterar um atributo de uma dada entidade
+     */
+    @Test
+    fun testAlterarAtributoNomeEntidade() {
+        // Inicializar objetos entidade
+        val entidadePai = Entidade("Pai")
+        val filho1 = Entidade("Filho1")
+        val filho2 = Entidade("Filho2")
+
+        val atributo1 = Atributo("nome", "valor1")
+        val atributo2 = Atributo("idade", "25")
+        val atributo3 = Atributo("nome", "valor2")
+        val atributo4 = Atributo("nome", "valor3")
+
+        // Adicionar os filhos à lista de filhos do pai
+        criarFilhosPai(entidadePai,filho1, filho2)
+
+        // Adicionar os atributos à entidade
+        entidadePai.adicionarAtributos(atributo1, atributo2)
+        filho1.adicionarAtributos(atributo3)
+        filho2.adicionarAtributos(atributo4)
+
+
+        // Alterar o nome de um atributo numa entidade especifica e nos seus filhos
+        alterarAtributoNomeEntidade(entidadePai, "nome", "novoNome")
+
+        // Verificar se o nome do atributo foi corretamente alterado na entidade pai e filhos
+        assertEquals("novoNome", atributo1.nomeatrib)
+        assertEquals("idade", atributo2.nomeatrib)
+        assertEquals("novoNome", atributo3.nomeatrib)
+        assertEquals("novoNome", atributo4.nomeatrib)
+    }
+
+    /**
+     * Teste para aceder a uma entidade e aos seus filhos e escreve o resultado em formato XML
+     */
+    @Test
+    fun testAcederEntidadMaeeFilhos() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("entidade1")
+        val e2 = Entidade("entidade2", "texto2")
+        val e3 = Entidade("entidade3")
+
+        // Inicializar objetos atributo
+        val a1 = Atributo("atributo1", "valor1")
+        val a2 = Atributo("atributo2", "valor2")
+
+        // Adicionar os filhos à lista de filhos do pai
+        criarFilhosPai(e1, e2, e3)
+
+        // Adicionar os atributos à entidade
+        e1.adicionarAtributos(a1, a2)
+
+
+        val outputStreamCaptor = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStreamCaptor))
+
+        // Aceder a uma entidade e aos seus filhos e escreve o resultado em formato XML
+        acederEntidadMaeeFilhos(e1)
+
+        // Valor esperado
+        val valorEsperado = "<${e1.nome} ${a1.nomeatrib}=\"${a1.valor}\" ${a2.nomeatrib}=\"${a2.valor}\">\n" +
+                "\t<${e2.nome}>${e2.texto}</${e2.nome}>\n\t<${e3.nome}>\n</${e1.nome}>\n"
+        val valorObtido = outputStreamCaptor.toString().replace("\r\n", "\n")
+
+        // Verificar se o valor obtido é igual ao esperado
+        assertEquals(valorEsperado, valorObtido)
+    }
 }
