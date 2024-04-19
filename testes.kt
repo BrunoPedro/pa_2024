@@ -1,3 +1,5 @@
+package Projeto
+
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -56,7 +58,7 @@ class UnitTests {
         val e3 = Entidade("Filho2")
 
         // Adicionar as entidades filhas à entidade pai
-        criarFilhosPai(e1, e2, e3)
+        e1.criarVariosFilhos(e2, e3)
 
         // Verificar se as entidades filhas foram adicionadas corretamente à entidade pai
         assertTrue(e1.filhos.contains(e2))
@@ -154,7 +156,7 @@ class UnitTests {
         val e3 = Entidade("filho2")
 
         // Adicionar os filhos à lista de filhos do pai
-        criarFilhosPai(e1, e2, e3)
+        e1.criarVariosFilhos(e2, e3)
 
         // Remover todos os filhos cujo nome comece por f
         apagarEntidadePorNomeV(e1, "f")
@@ -303,7 +305,7 @@ class UnitTests {
         val a2 = Atributo("atributo2", "valor2")
 
         // Adicionar os filhos à lista de filhos do pai
-        criarFilhosPai(e1, e2, e3)
+        e1.criarVariosFilhos(e2, e3)
 
         // Adicionar os atributos às entidades
         e1.adicionarAtributos(a1)
@@ -359,7 +361,7 @@ class UnitTests {
         val a2 = Atributo("atributo2", "valor2")
 
         // Adicionar o filho à lista de filhos do pai
-        criarFilhosPai(e1, e2)
+        e1.criarVariosFilhos(e2)
 
         // Adicionar os atributos à entidade
         e2.adicionarAtributos(a1, a2)
@@ -386,7 +388,7 @@ class UnitTests {
         val a2 = Atributo("atributo2", "valor2")
 
         // Adicionar o filho à lista de filhos do pai
-        criarFilhosPai(e1, e2)
+        e1.criarVariosFilhos(e2)
 
         // Adicionar os atributos à entidade
         e1.adicionarAtributos(a1, a2)
@@ -411,7 +413,7 @@ class UnitTests {
         val e3 = Entidade("entidade3")
 
         // Adicionar os filhos à lista de filhos do pai
-        criarFilhosPai(e1, e2, e3)
+        e1.criarVariosFilhos(e2, e3)
 
         // Criar um novo atributo globalmente numa dada entidade
         criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "entidade1", "novoAtributo", "valorNovoAtributo")
@@ -499,11 +501,11 @@ class UnitTests {
 
 
         //Criação de entidades (ponto 1 do exercicio)
-        criarFilhosPai(e1, e2, e3, e9)
-        criarFilhosPai(e3, e4, e5, e6)
-        criarFilhosPai(e9, e10, e11, e12)
-        criarFilhosPai(e6, e7, e8)
-        criarFilhosPai(e12, e13, e14,e15)
+        e1.criarVariosFilhos(e2, e3, e9)
+        e3.criarVariosFilhos(e4, e5, e6)
+        e9.criarVariosFilhos(e10, e11, e12)
+        e6.criarVariosFilhos(e7, e8)
+        e12.criarVariosFilhos(e13, e14,e15)
         //Criação de atributos (ponto 2 do exercicio)
         e3.adicionarAtributos (a1)
         e9.adicionarAtributos (a6)
@@ -571,7 +573,7 @@ class UnitTests {
         val atributo4 = Atributo("nome", "valor3")
 
         // Adicionar os filhos à lista de filhos do pai
-        criarFilhosPai(entidadePai,filho1, filho2)
+        entidadePai.criarVariosFilhos(filho1, filho2)
 
         // Adicionar os atributos à entidade
         entidadePai.adicionarAtributos(atributo1, atributo2)
@@ -604,7 +606,7 @@ class UnitTests {
         val a2 = Atributo("atributo2", "valor2")
 
         // Adicionar os filhos à lista de filhos do pai
-        criarFilhosPai(e1, e2, e3)
+        e1.criarVariosFilhos(e2, e3)
 
         // Adicionar os atributos à entidade
         e1.adicionarAtributos(a1, a2)
