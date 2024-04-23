@@ -27,10 +27,10 @@ open class Entidade(nome: String, texto: String? = null) {
     var atributos: MutableList<Atributo>
 
     init{
-    // Elimina caracteres inválidos, espaços e números do nome
-    val nomeCorreto = nome.replace(Regex("[^A-Za-z]"), "")
-    // Valida se o nome resultante não está vazio
-    require(nomeCorreto.isNotEmpty()) { "O nome não pode conter apenas caracteres inválidos" }
+        // Elimina caracteres inválidos, espaços e números do nome
+        val nomeCorreto = nome.replace(Regex("[^A-Za-z]"), "")
+        // Valida se o nome resultante não está vazio
+        require(nomeCorreto.isNotEmpty()) { "O nome não pode conter apenas caracteres inválidos" }
 
         this.nome = nomeCorreto
         this.filhos = mutableListOf()
@@ -91,12 +91,21 @@ open class Entidade(nome: String, texto: String? = null) {
      * @throws IllegalArgumentException, Se já existir um atributo com o mesmo nome na lista de atributos
      */
     fun criarAtributo(novoAtributo: String, valor: String) {
+        val atributo = Atributo(novoAtributo,valor)
         val nomeAtributoExiste = this.atributos.any { it.nomeatrib == novoAtributo }
-        if (nomeAtributoExiste) {
-            throw IllegalArgumentException("Já existe um atributo com o nome '$novoAtributo'!")
-        } else {
-            val vAtributo = Atributo(novoAtributo, valor)
-            this.atributos.add(vAtributo)
+        try {
+            if (nomeAtributoExiste) {
+                throw IllegalArgumentException("Já existe um atributo com o nome '$novoAtributo'!")
+
+            } else {
+                // Adiciona o novo atributo à lista de atributos da entidade
+                this.atributos.add(atributo)
+            }
+        }
+        catch (e: IllegalArgumentException){
+            // handle the exception, e.g., print an error message
+            println("Caught exception: ${e.message}")
+            // handle the exception gracefully or recover from it
         }
     }
 
@@ -112,11 +121,19 @@ open class Entidade(nome: String, texto: String? = null) {
         for (atributo in novosAtributos) {
             // Verifica se já existe um atributo com o mesmo nome
             val nomeAtributoExiste = this.atributos.any { it.nomeatrib == atributo.nomeatrib }
-            if (nomeAtributoExiste) {
-                throw IllegalArgumentException("Já existe um atributo com o nome '$atributo'!")
-            } else {
-                // Adiciona o novo atributo à lista de atributos da entidade
-                this.atributos.add(atributo)
+            try {
+                if (nomeAtributoExiste) {
+                    throw IllegalArgumentException("Já existe um atributo com o nome '$atributo'!")
+
+                } else {
+                    // Adiciona o novo atributo à lista de atributos da entidade
+                    this.atributos.add(atributo)
+                }
+            }
+            catch (e: IllegalArgumentException){
+                // handle the exception, e.g., print an error message
+                println("Caught exception: ${e.message}")
+                // handle the exception gracefully or recover from it
             }
         }
     }
@@ -563,59 +580,77 @@ fun apagarEntidadePorNomeV(entidade: Entidade?, nome: String) {
     }
 }
 
-/**
- * Função que escreve o conteúdo de um StringBuilder num arquivo XML
- *
- * @param ficheiro, ficheiro onde o conteúdo XML será escrito
- * @param tipo, tipo de codificação para o arquivo XML
- * @param versão, versão do XML
- * @param xmlStringBuilder, StringBuilder contendo o conteúdo XML a ser escrito no ficheiro
- */
-fun escreverFicheiro(ficheiro: File, tipo: String, versão: String,xmlStringBuilder: StringBuilder ) {
-    // Escreve a declaração XML no ficheiro
-    ficheiro.writeText("<?xml version=\"${versão}\" encoding=\"${tipo}\"?>\n")
-    // Escreve o conteúdo do StringBuilder no ficheiro
-    ficheiro.appendText(xmlStringBuilder.toString())
-}
 
-/**
- * A função escreve a representação XML da entidade e dos seus filhos numa StringBuilder
- *
- * @param entidade, entidade para a qual se está a escrever a representação XML
- * @param nivel, nível de indentação para a formatação XML
- * @param xmlStringBuilder, StringBuilder para acumular o conteúdo XML
- */
-fun escreverString(entidade: Entidade, nivel: Int, xmlStringBuilder: StringBuilder) {
-    // Cria uma string com espaços em branco para representar a indentação com base no nível
-    val tabs = "\t".repeat(nivel)
+class Documento(nome: String) {
+    var nome: String
+    val xmlStringBuilder: StringBuilder =  StringBuilder()
 
-    // Verifica se a entidade tem atributos
-    if (entidade.atributos.isNotEmpty()) {
-        // Escreve os atributos da entidade
-        val atributosXml = entidade.atributos.joinToString(" ") { "${it.nomeatrib}=\"${it.valor}\"" }
-        // Veriica se entidade tem filhos para definir como escreve a terminação
-        if (entidade.filhos.isEmpty()){
-            xmlStringBuilder.append("$tabs<${entidade.nome} $atributosXml/>\n")
-        } else {
-            xmlStringBuilder.append("$tabs<${entidade.nome} $atributosXml>\n")
-        }
-    } else {
-        // Adiciona a tag de abertura da entidade se não houver atributos
-        if (entidade.texto == null) {
-            xmlStringBuilder.append("$tabs<${entidade.nome}>\n")
-        } else {
-            // Adiciona a tag de abertura da entidade com o texto se não houver atributos
-            xmlStringBuilder.append("$tabs<${entidade.nome}>${entidade.texto}</${entidade.nome}>\n")
-        }
+
+    init{
+        // Elimina caracteres inválidos, espaços e números do nome
+        val nomeCorreto = nome.replace(Regex("[^A-Za-z]"), "")
+        // Valida se o nome resultante não está vazio
+        require(nomeCorreto.isNotEmpty()) { "O nome não pode conter apenas caracteres inválidos" }
+
+        this.nome = nomeCorreto
+
+
     }
-    // Verifica se a entidade tem filhos
-    if (entidade.filhos.isNotEmpty()) {
-        // Percorre os filhos da entidade e chama recursivamente a função para cada filho
-        for (filho in entidade.filhos) {
-            escreverString(filho, nivel + 1, xmlStringBuilder)
+    /**
+     * Função que escreve o conteúdo de um StringBuilder num arquivo XML
+     *
+     * @param ficheiro, ficheiro onde o conteúdo XML será escrito
+     * @param tipo, tipo de codificação para o arquivo XML
+     * @param versão, versão do XML
+     * @param xmlStringBuilder, StringBuilder contendo o conteúdo XML a ser escrito no ficheiro
+     */
+    fun escreverFicheiro(ficheiro: File, tipo: String, versão: String ) {
+        // Escreve a declaração XML no ficheiro
+        ficheiro.writeText("<?xml version=\"${versão}\" encoding=\"${tipo}\"?>\n")
+        // Escreve o conteúdo do StringBuilder no ficheiro
+        ficheiro.appendText(xmlStringBuilder.toString())
+    }
+
+    /**
+     * A função escreve a representação XML da entidade e dos seus filhos numa StringBuilder
+     *
+     * @param entidade, entidade para a qual se está a escrever a representação XML
+     * @param nivel, nível de indentação para a formatação XML
+     * @param xmlStringBuilder, StringBuilder para acumular o conteúdo XML
+     */
+    fun escreverString(entidade: Entidade, nivel: Int) {
+        // Cria uma string com espaços em branco para representar a indentação com base no nível
+        val tabs = "\t".repeat(nivel)
+        //val xmlStringBuilder = StringBuilder()
+
+        // Verifica se a entidade tem atributos
+        if (entidade.atributos.isNotEmpty()) {
+            // Escreve os atributos da entidade
+            val atributosXml = entidade.atributos.joinToString(" ") { "${it.nomeatrib}=\"${it.valor}\"" }
+            // Veriica se entidade tem filhos para definir como escreve a terminação
+            if (entidade.filhos.isEmpty()){
+                xmlStringBuilder.append("$tabs<${entidade.nome} $atributosXml/>\n")
+            } else {
+                xmlStringBuilder.append("$tabs<${entidade.nome} $atributosXml>\n")
+            }
+        } else {
+            // Adiciona a tag de abertura da entidade se não houver atributos
+            if (entidade.texto == null) {
+                xmlStringBuilder.append("$tabs<${entidade.nome}>\n")
+            } else {
+                // Adiciona a tag de abertura da entidade com o texto se não houver atributos
+                xmlStringBuilder.append("$tabs<${entidade.nome}>${entidade.texto}</${entidade.nome}>\n")
+            }
         }
-        // Escreve a marca de fecho da entidade com base no nível
-        xmlStringBuilder.append("$tabs</${entidade.nome}>\n")
+        // Verifica se a entidade tem filhos
+        if (entidade.filhos.isNotEmpty()) {
+            // Percorre os filhos da entidade e chama recursivamente a função para cada filho
+            for (filho in entidade.filhos) {
+                escreverString(filho, nivel + 1)
+            }
+            // Escreve a marca de fecho da entidade com base no nível
+            xmlStringBuilder.append("$tabs</${entidade.nome}>\n")
+        }
     }
 }
 
@@ -663,7 +698,7 @@ fun main() {
     e3.criarVariosFilhos(e4, e5, e6)
     e9.criarVariosFilhos(e10, e11, e12)
     e6.criarVariosFilhos(e7, e8)
-  //  e12.criarVariosFilhos()
+    //  e12.criarVariosFilhos()
     e12.criarVariosFilhos(e13, e14,e15)
 
     //Criação de atributos (ponto 2 do exercicio)
@@ -676,45 +711,45 @@ fun main() {
     e15.adicionarAtributos (a11, a12)
 
 
-/*
-       //Exemplos de operações sobre entidades e atributos
-       //(ponto 1 do exercicio)
-       apagarEntidade(e9)
-       //(ponto 2 do exercicio)
-       e14.apagarAtributo(a9)
-       alterarAtributo(e3,"codigo", "Teste","M4100" )
-       // Altera um atributo para uma entidade especifica
-       alterarAtributoNomeEntidade(e1, "codigo","codigo2")
-       //(ponto 3 do exercicio)
-       acederEntidadMaeeFilhos(e9)
-       //(ponto 6 do exercicio)
-       criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "FUC", "code", "zzzzz")
-       //(ponto 7 do exercicio)
-       alterarNomeEntidade(e1,"FUC", "FUCnovo")
-       //(ponto 8 do exercicio)
-       alterarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo","codigo2")
-       //(ponto 9 do exercicio)
-       apagarEntidadePorNome(e1,"FUCnovo")
-       //(ponto 10 do exercicio)
-       apagarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo")
-       //(Dois exercicio não solicitados em nenhum ponto do trabalho)
-          //Apagar atributo globalmente só por nome de atributo
-       apagarAtributoGlobalNome(e1,"codigo")
-         //Alterar atributo globalmente só por nome de atributo
-       alterarAtributoNomeEntidade(e1, "codigo","codigo2")
-       //(ponto 5 do exercicio), foi implementado o visitor para os pontos 6.
-       apagarEntidadePorNomeV(e1,"FUC")
-      // Chamada da função XPath para pesquisa de expressões"
-       val resultados = encontrarEntidadesPorXPath(e1, "FUC/etcs")
-       imprimirResultados(resultados )
-   */
+    /*
+           //Exemplos de operações sobre entidades e atributos
+           //(ponto 1 do exercicio)
+           apagarEntidade(e9)
+           //(ponto 2 do exercicio)
+           e14.apagarAtributo(a9)
+           alterarAtributo(e3,"codigo", "Teste","M4100" )
+           // Altera um atributo para uma entidade especifica
+           alterarAtributoNomeEntidade(e1, "codigo","codigo2")
+           //(ponto 3 do exercicio)
+           acederEntidadMaeeFilhos(e9)
+           //(ponto 6 do exercicio)
+           criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "FUC", "code", "zzzzz")
+           //(ponto 7 do exercicio)
+           alterarNomeEntidade(e1,"FUC", "FUCnovo")
+           //(ponto 8 do exercicio)
+           alterarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo","codigo2")
+           //(ponto 9 do exercicio)
+           apagarEntidadePorNome(e1,"FUCnovo")
+           //(ponto 10 do exercicio)
+           apagarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo")
+           //(Dois exercicio não solicitados em nenhum ponto do trabalho)
+              //Apagar atributo globalmente só por nome de atributo
+           apagarAtributoGlobalNome(e1,"codigo")
+             //Alterar atributo globalmente só por nome de atributo
+           alterarAtributoNomeEntidade(e1, "codigo","codigo2")
+           //(ponto 5 do exercicio), foi implementado o visitor para os pontos 6.
+           apagarEntidadePorNomeV(e1,"FUC")
+          // Chamada da função XPath para pesquisa de expressões"
+           val resultados = encontrarEntidadesPorXPath(e1, "FUC/etcs")
+           imprimirResultados(resultados )
+       */
 
-
+    //Instancia um objeto documento
+    val documento = Documento("projeto.xml")
 
     //(ponto 4 do exercicio)
     // Escreve a estrutura da árvore de entidades e atributos em um StringBuilder como XML
-    val stringBuilder = StringBuilder()
-    escreverString(e1, 0, stringBuilder)
+    documento.escreverString(e1, 0)
 
     //(ponto 4 do exercicio)
     // Escreve o conteúdo do StringBuilder em um ficheiro XML
@@ -723,9 +758,6 @@ fun main() {
     // Imprime o diretório atual
     println("Diretório atual: $currentDir")
 
-    val ficheiro = File("projeto.xml")
-    val tipo = "UTF-8"
-    val versão = "2.0"
-    escreverFicheiro(ficheiro, tipo, versão,stringBuilder)
+    documento.escreverFicheiro(File(documento.nome), "UTF-8", "1.0")
 }
 
