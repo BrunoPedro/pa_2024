@@ -581,21 +581,23 @@ fun apagarEntidadePorNomeV(entidade: Entidade?, nome: String) {
 }
 
 
-class Documento(nome: String) {
-    var nome: String
+class Documento() {
+    // var nome: String
     val xmlStringBuilder: StringBuilder =  StringBuilder()
 
+    /*
+        init{
+            // Elimina caracteres inválidos, espaços e números do nome
+            val nomeCorreto = nome.replace(Regex("[^A-Za-z]"), "")
+            // Valida se o nome resultante não está vazio
+            require(nomeCorreto.isNotEmpty()) { "O nome não pode conter apenas caracteres inválidos" }
 
-    init{
-        // Elimina caracteres inválidos, espaços e números do nome
-        val nomeCorreto = nome.replace(Regex("[^A-Za-z]"), "")
-        // Valida se o nome resultante não está vazio
-        require(nomeCorreto.isNotEmpty()) { "O nome não pode conter apenas caracteres inválidos" }
-
-        this.nome = nomeCorreto
+            this.nome = nomeCorreto
 
 
-    }
+        }
+
+     */
     /**
      * Função que escreve o conteúdo de um StringBuilder num arquivo XML
      *
@@ -604,7 +606,9 @@ class Documento(nome: String) {
      * @param versão, versão do XML
      * @param xmlStringBuilder, StringBuilder contendo o conteúdo XML a ser escrito no ficheiro
      */
-    fun escreverFicheiro(ficheiro: File, tipo: String, versão: String ) {
+    fun escreverFicheiro(nome: String , tipo: String, versão: String ) {
+
+        val ficheiro = File(nome)
         // Escreve a declaração XML no ficheiro
         ficheiro.writeText("<?xml version=\"${versão}\" encoding=\"${tipo}\"?>\n")
         // Escreve o conteúdo do StringBuilder no ficheiro
@@ -745,7 +749,7 @@ fun main() {
        */
 
     //Instancia um objeto documento
-    val documento = Documento("projeto.xml")
+    val documento = Documento()
 
     //(ponto 4 do exercicio)
     // Escreve a estrutura da árvore de entidades e atributos em um StringBuilder como XML
@@ -758,6 +762,6 @@ fun main() {
     // Imprime o diretório atual
     println("Diretório atual: $currentDir")
 
-    documento.escreverFicheiro(File(documento.nome), "UTF-8", "1.0")
+    documento.escreverFicheiro("projeto.xml", "UTF-8", "1.0")
 }
 
