@@ -189,6 +189,28 @@ class UnitTests {
     }
 
     /**
+     * Teste para encontrar entidades a remover
+     */
+    @Test
+    fun testGetEntidadesRemover() {
+        // Inicializar objetos entidade
+        val e1 = Entidade("nome")
+        val e2 = Entidade("filho1")
+        val e3 = Entidade("nome")
+
+        e1.criarVariosFilhos(e2,e3)
+
+        // Instanciar um visitor que irá procurar pelas entidades a remover
+        val visitor = ApagarEntidadePorNomeVisitor("nome")
+        e1.accept(visitor, 0)
+        val entidadesRemover = visitor.getEntidadesRemover()
+
+        // Verificar se as entidades a serem removidas têm o nome certo
+        assertTrue(entidadesRemover.size == 2)
+        assertTrue(entidadesRemover[0].nome=="nome" || entidadesRemover[1].nome == "nome")
+    }
+
+    /**
      *  Teste para remover todas as entidades que têm nomes que começam com o prefixo identificado
      */
     @Test
@@ -330,6 +352,32 @@ class UnitTests {
         // Verificar se o atributo foi removido corretamente
         assertEquals(2, entidade.atributos.size)
         assertEquals("AtributoUm", entidade.atributos[0].nomeatrib)
+        assertEquals("AtributoTres", entidade.atributos[1].nomeatrib)
+    }
+
+    /**
+     * Teste para apagar um atributo
+     */
+    @Test
+    fun testApagarAtributoNome() {
+        // Inicializar objeto entidade
+        val entidade = Entidade("Entidade")
+
+        // Inicializar objetos atributo
+        val atributo1 = Atributo("AtributoUm", "ValorUm")
+        val atributo2 = Atributo("AtributoDois", "ValorDois")
+        val atributo3 = Atributo("AtributoTres", "ValorTres")
+
+
+        // Adicionar os atributos à entidade
+        entidade.adicionarAtributos(atributo1,atributo2,atributo3)
+
+        // Remover um atributo específico
+        entidade.apagarAtributoNome("AtributoUm")
+
+        // Verificar se o atributo foi removido corretamente
+        assertEquals(2, entidade.atributos.size)
+        assertEquals("AtributoDois", entidade.atributos[0].nomeatrib)
         assertEquals("AtributoTres", entidade.atributos[1].nomeatrib)
     }
 
@@ -484,7 +532,7 @@ class UnitTests {
         val valorEsperado = "<"+ entidade.nome + ">" + entidade.texto + "</"+ entidade.nome + ">\n"
 
         // Verificar se a representação XML corresponde ao esperado
-          assertEquals(valorEsperado, resultado)
+        assertEquals(valorEsperado, resultado)
     }
 
 
@@ -582,10 +630,12 @@ class UnitTests {
         val a1 = Atributo("atributoUm", "valorUm")
         val a2 = Atributo("atributoDois", "valorDois")
 
+        // Adicionar os atributos à entidade
+        e1.adicionarAtributos(a1,a2)
         // Criar lista de resultados
         val resultados = listOf(
-            Pair(e1, listOf(a1, a2)),
-            Pair(e2, emptyList())
+            Pair(e1, e1.atributos),
+            Pair(e2, e2.atributos)
         )
 
         val outputStreamCaptor = ByteArrayOutputStream()
