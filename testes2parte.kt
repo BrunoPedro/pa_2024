@@ -52,25 +52,55 @@ class UnitTests2 {
         assertNotNull(pesoAtributo)
         assertEquals("20%", pesoAtributo?.valor)
     }
-}
 
-/**
- * fazer testes de:
- *   anotação XmlElemento para o nome da classe e para o nome dos campos nas 2 classes
- *   anotação da order para a classe FUC
- *   fazer teste para a anotação Ignore
- *   fazer teste do escrevexml para :
- *   val z = FUC("M4310", "Programação Avançada", 6.0, "la la...",
- *     listOf(
- *          ComponenteAvaliacao("Quizzes", 20),
- *          ComponenteAvaliacao("Projeto", 80),
- *          ComponenteAvaliacao("Discussão", 40)
- *     )
- * )
- * e para
- * val z = FUC("M9876", "Cibersegurança", 6.0, "Com exame", emptyList())
- * e para
- * val c = ComponenteAvaliacao("Quizzes", 20)
- * Fazer teste da anotação XmlAdapter(FUCAdapter::class)
- * E depois de falar com o professor fazer teste sem as anotações
- */
+
+    @Test
+    fun testXmlElemento() {
+        val componente = ComponenteAvaliacao("Teste", 10)
+        val fuc = FUC("M1234", "Teste FUC", 5.0, "Nenhuma observação", listOf(componente))
+
+        assertTrue(componente::class.annotations.any { it is XmlElemento && it.name == "componente" })
+        assertTrue(ComponenteAvaliacao::nome.annotations.any { it is XmlElemento && it.name == "nometeste" })
+        assertTrue(ComponenteAvaliacao::peso.annotations.any { it is XmlElemento && it.name == "pesoteste" })
+
+        assertTrue(fuc::class.annotations.any { it is XmlElemento && it.name == "FUC" })
+        assertTrue(FUC::codigo.annotations.any { it is XmlElemento && it.name == "codigotes" })
+        assertTrue(FUC::nome.annotations.any { it is XmlElemento && it.name == "nometes" })
+        assertTrue(FUC::ects.annotations.any { it is XmlElemento && it.name == "ectstes" })
+        assertTrue(FUC::observacoes.annotations.any { it is Ignore })
+        assertTrue(FUC::avaliacao.annotations.any { it is XmlElemento && it.name == "avaliates" })
+    }
+
+    @Test
+    fun testIgnoreAnnotations() {
+        val fuc = FUC("M1234", "Teste FUC", 5.0, "Nenhuma observação", emptyList())
+
+        assertTrue(fuc::observacoes.annotations.any { it is Ignore })
+    }
+
+    @Test
+    fun testEscreveXml() {
+        val c = ComponenteAvaliacao("Quizzes", 20)
+        println(c.escreveXml())
+
+        val z1 = FUC("M4310", "Programação Avançada", 6.0, "la la...",
+            listOf(
+                ComponenteAvaliacao("Quizzes", 20),
+                ComponenteAvaliacao("Projeto", 80),
+                ComponenteAvaliacao("Discussão", 40)
+            )
+        )
+        println(z1.escreveXml())
+
+        val z2 = FUC("M9876", "Cibersegurança", 6.0, "Com exame", emptyList())
+        println(z2.escreveXml())
+    }
+
+    @Test
+    fun testXmlAdapter() {
+        // Verifica se a anotação XmlAdapter está presente na classe FUC
+        val xmlAdapterAnnotation = FUC::class.annotations.filterIsInstance<XmlAdapter>().firstOrNull()
+        assertTrue(xmlAdapterAnnotation == null) { "A anotação XmlAdapter não está presente na classe FUC" }
+    }
+
+}
