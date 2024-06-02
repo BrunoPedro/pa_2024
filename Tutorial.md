@@ -676,7 +676,7 @@ class FUCA(
 ```
 
 Neste exemplo foi criada uma classe **FUCAdapter** que implementa o interface **XmlAdapterInterface** para fornecer uma implementação personalizada que transforma os dados de uma instância FUCA em uma forma específica e diferente da representação padrão.
-Na classe "FUCA", foi colocada a anotação **@XmlAdapter**, que tem como parâmetro a classe **FUCAdapter**, ou seja  vai alterar a estrutura da classe FUCA tanto ano nível de nomes como de ordem dos atributos.
+Na classe "FUCA", foi colocada a anotação **@XmlAdapter**, que tem como parâmetro a classe **FUCAdapter**, ou seja  vai alterar a estrutura da classe FUCA tanto ao nível de nomes como de ordem dos atributos.
 
 ### 5.iv Anotacão Ignore
 
