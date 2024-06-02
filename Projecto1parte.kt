@@ -170,6 +170,7 @@ open class Entidade(nome: String, texto: String? = null) {
  * @throws IllegalArgumentException, Se o nome resultante após a eliminação de caracteres inválidos estiver vazio
  */
 open class Atributo (nomeatrib: String, valor: String) {
+ //   val nome: Unit
     var nomeatrib: String = ""
     var valor: String = ""
 
@@ -639,102 +640,4 @@ fun escreverString(entidade: Entidade, nivel: Int = 0, xmlStringBuilder: StringB
     return xmlStringBuilder
 }
 
-/**
- * Função principal que exemplifica  a criação de entidades, atributos e relacionamentos entre eles
- * Realização de operações como criação de arquivo XML, eliminar, criar e alterar atributos e entidades
- * Pesquisa de entidades
- */
-fun main() {
-    // Criação de instâncias da classe Entidade com diferentes valores para os campos nome e texto
-    val e1 = Entidade("plano")
-    val e2 = Entidade("curso", "Mestrado de Engenharia Informática")
-    val e3 = Entidade("FUC")
-    val e4 = Entidade("nome", "Programação Avançada")
-    val e5 = Entidade("etcs", "6.0")
-    val e6 = Entidade("avaliação")
-    val e7 = Entidade("componente")
-    val e8 = Entidade("componente")
-    val e9 = Entidade("FUC")
-    val e10 = Entidade("nome", "Dissertação")
-    val e11 = Entidade("etcs", "42.0")
-    val e12 = Entidade("avaliação")
-    val e13 = Entidade("componente")
-    val e14 = Entidade("componente")
-    val e15 = Entidade("componente")
-    // Criação de instâncias da classe Atributo com diferentes valores para os campos nomeatrib e valor
-    val a1 = Atributo("codigo1", "M4310")
-    val a2 = Atributo("no--me", "Quizzes")
-    val a3 = Atributo("peso", "20%")
-    val a4 = Atributo("nome", "Projeto")
-    val a5 = Atributo("peso", "80%")
-    val a6 = Atributo("codigo", "03782")
-    val a7 = Atributo("nome", "Dissertação")
-    val a8 = Atributo("peso", "60%")
-    val a9 = Atributo("nome", "Apresentação")
-    val a10 = Atributo("peso", "20%")
-    val a11 = Atributo("nome", "Discussão")
-    val a12 = Atributo("peso", "20%")
-
-
-    //Criação de entidades (ponto 1 do exercicio)
-    e1.criarVariosFilhos(e2, e3, e9)
-    e3.criarVariosFilhos(e4, e5, e6)
-    e9.criarVariosFilhos(e10, e11, e12)
-    e6.criarVariosFilhos(e7, e8)
-    //  e12.criarVariosFilhos()
-    e12.criarVariosFilhos(e13, e14,e15)
-
-    //Criação de atributos (ponto 2 do exercicio)
-    e3.adicionarAtributos (a1)
-    e9.adicionarAtributos (a6)
-    e7.adicionarAtributos (a2, a3)
-    e8.adicionarAtributos (a4, a5)
-    e13.adicionarAtributos (a7, a8)
-    e14.adicionarAtributos (a9, a10)
-    e15.adicionarAtributos (a11, a12)
-
-
-    /*
-           //Exemplos de operações sobre entidades e atributos
-           //(ponto 1 do exercicio)
-           apagarEntidade(e9)
-           //(ponto 2 do exercicio)
-           e14.apagarAtributo(a9)
-           alterarAtributo(e3,"codigo", "Teste","M4100" )
-           // Altera um atributo para uma entidade especifica
-           alterarAtributoNomeEntidade(e1, "codigo","codigo2")
-           //(ponto 3 do exercicio)
-           acederEntidadMaeeFilhos(e9)
-           //(ponto 6 do exercicio)
-           criarAtributoNomeEntidadeNomeAtributoGlobal(e1, "FUC", "code", "zzzzz")
-           //(ponto 7 do exercicio)
-           alterarNomeEntidade(e1,"FUC", "FUCnovo")
-           //(ponto 8 do exercicio)
-           alterarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo","codigo2")
-           //(ponto 9 do exercicio)
-           apagarEntidadePorNome(e1,"FUCnovo")
-           //(ponto 10 do exercicio)
-           apagarAtributoNomeEntidadeNomeAtributoGlobal(e1,"FUC", "codigo")
-           //(Dois exercicio não solicitados em nenhum ponto do trabalho)
-              //Apagar atributo globalmente só por nome de atributo
-           apagarAtributoGlobalNome(e1,"codigo")
-             //Alterar atributo globalmente só por nome de atributo
-           alterarAtributoNomeEntidade(e1, "codigo","codigo2")
-           //(ponto 5 do exercicio), foi implementado o visitor para os pontos 6.
-           apagarEntidadePorNomeV(e1,"FUC")
-          // Chamada da função XPath para pesquisa de expressões"
-           val resultados = encontrarEntidadesPorXPath(e1, "FUC/etcs")
-           imprimirResultados(resultados )
-       */
-
-    //Instancia um objeto documento
-    val documento = Documento("projeto.xml")
-
-    //(ponto 4 do exercicio)
-    // Escreve a estrutura da árvore de entidades e atributos em um StringBuilder como XML
-    val stringBuilder = escreverString(e1, 0,StringBuilder())
-    // Escreve o conteúdo do StringBuilder em um ficheiro XML
-    documento.escreverFicheiro(File(documento.nome), "UTF-8", "1.0",stringBuilder)
-
-}
 

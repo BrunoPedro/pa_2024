@@ -2,7 +2,6 @@ package Projeto2parte
 
 import Projeto1parte.Atributo
 import Projeto1parte.Entidade
-import Projeto1parte.escreverString
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.declaredMemberProperties
@@ -128,7 +127,6 @@ fun mapValue(obj: Any?) =
         else -> "Não especificado"
     }
 
-
 /**
  * Converte qualquer objeto em uma instância da classe `Entidade`.
  *
@@ -154,6 +152,7 @@ fun Any.escreveXml(): Entidade {
         val adapterInstance = xmlAdapterAnnotation.clazz.constructors.first().call()
         return (adapterInstance as XmlAdapterInterface<Any>).adapt(this)
     }
+
     val entidade = Entidade(tagName)
 
     // Ordenar as propriedades pela anotação @Order
@@ -167,14 +166,14 @@ fun Any.escreveXml(): Entidade {
         val value = property.getter.call(this) // Converte para String
         if (value != null) {
             if (value is Collection<*>){
-                val filho = Entidade(property.name)
+                val filho = Entidade(property.findAnnotation<XmlElemento>()?.nome ?: property.name)
                 entidade.criarFilho(filho)
                 value.forEach{
                     filho.criarFilho(criarAtrib(it))
                 }
             }
             else {
-                if (property.findAnnotation<Ignore>() == null) {
+               if (property.findAnnotation<Ignore>() == null) {
                     val xmlString = property.findAnnotation<XmlString>()
                     val nomeCamp = property.findAnnotation<XmlElemento>()?.nome ?: property.name
                     val valueCamp = if (xmlString != null) {
@@ -192,7 +191,6 @@ fun Any.escreveXml(): Entidade {
             }
         }
     }
-
     return entidade
 }
 
@@ -203,7 +201,7 @@ fun criarAtrib(o: Any?): Entidade {
     }
     val clazz = o::class
     val ann = clazz.findAnnotation<XmlElemento>()
-    val nomeAnotacao = ann?.name ?: ""
+    val nomeAnotacao = ann?.nome ?: clazz.simpleName!!
     val nomeclasse = Entidade(nomeAnotacao)
 
     // Verificar se a classe tem a anotação XmlAdapter
@@ -231,118 +229,3 @@ fun criarAtrib(o: Any?): Entidade {
     nomeclasse.adicionarAtributos(*attributes.toTypedArray())
     return nomeclasse
 }
-
-
-// 2º Fase do Trabalho - Implementação
-
-/**
- * Classe que implementa o interface [XmlToString] para adicionar uma percentagem ("%") no final de um objeto
- * durante operações de instaciação ou adaptação para XML.
- * Implementa o método [toString] da interface [XmlToString] para adicionar a percentagem ao final da string.
- * @param obj , objeto a ser convertido em string.
- * @return A representação em string do objeto com a percentagem adicionada ao final.
- */
-class AddPercentage : XmlToString {
-    override fun toString(obj: Any): String {
-        return obj.toString() + "%"
-    }
-}
-
-/**
- * Adaptador para a classe FUC, implementando o interface XmlAdapterInterface.
- * Esta classe fornece uma implementação personalizada para adaptar instâncias da FUC em entidades XML.
- * É usada para criar e manipular a estrutura XML de acordo com as necessidades específicas, como trocar a ordem
- * dos atributos ou adicionar informações adicionais.
- */
-class FUCAdapter : XmlAdapterInterface<FUC> {
-    override fun adapt(instance: FUC): Entidade {
-        // Crie e manipule a entidade conforme necessário
-        val entidade = Entidade("FUCAdapted")
-        entidade.criarFilho(Entidade("codigo", instance.codigo))
-        entidade.criarFilho(Entidade("nome", instance.nome))
-        entidade.criarFilho(Entidade("ects", instance.ects.toString()))
-        entidade.criarFilho(Entidade("observacoes", instance.observacoes))
-        // Adapte outras propriedades conforme necessário
-        return entidade
-    }
-}
-
-/**
- * Representa um componente de avaliação com nome e peso.
- * A classe tem várias anotações
- * @property nome, nome do componente de avaliação.
- * @property peso, peso do componente de avaliação.
- */
-@XmlElemento(name = "componente")
-data class ComponenteAvaliacao(
-    @XmlElemento(name = "nometeste")
-    @Order(2)
-    val nome: String,
-    @XmlElemento(name = "pesoteste")
-    @XmlString(AddPercentage::class)
-    @Order(1)
-    val peso: Int
-)
-
-/**
- * Representa uma classe (FUC) com as informações e componentes de avaliação.
- * A classe tem várias anotações
- * @property codigo, código da classe.
- * @property nome, nome da classe.
- * @property ects, créditos ECTS da classe.
- * @property observacoes, Observações adicionais da classe.
- * @property avaliacao, lista de componentes de avaliação da classe.
- */
-//@XmlAdapter(FUCAdapter::class)
-@XmlElemento(name = "FUC")
-class FUC(
-    @XmlElemento(name = "codigotes")
-    val codigo: String,
- //   @Order(3)
-    @XmlElemento(name = "nometes")
-    val nome: String,
-    @XmlElemento(name = "ectstes")
- //   @Order(2)
-    val ects: Double,
-    @XmlElemento(name = "obsertes")
-    @Ignore
-    val observacoes: String,
-    @XmlElemento(name = "avaliates")
- //   @Order(1)
-    val avaliacao: List<ComponenteAvaliacao>
-)
-
-// 3º Fase do Trabalho - Opcional DSL
-
-
-
-
-/**
- * Função principal que exemplifica  a criação de entidades, atributos e relacionamentos entre eles
- * Realização de operações como criação de arquivo XML, eliminar, criar e alterar atributos e entidades
- * Pesquisa de entidades
- */
-fun main() {
-
-// 2º Fase do Trabalho
-
-
-val c = ComponenteAvaliacao("Quizzes", 20)
-println(c.escreveXml())
-
-
-//val z = FUC("M9876", "Cibersegurança", 6.0, "Com exame", emptyList())
-
-val z = FUC("M4310", "Programação Avançada", 6.0, "la la...",
-    listOf(
-         ComponenteAvaliacao("Quizzes", 20),
-         ComponenteAvaliacao("Projeto", 80),
-         ComponenteAvaliacao("Discussão", 40)
-    )
-)
-    val e1 = z.escreveXml()
-    val stringBuilder = escreverString(e1, 0,StringBuilder())
-    println(stringBuilder)
-
-}
-

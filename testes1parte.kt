@@ -720,5 +720,67 @@ class UnitTests {
         // Verificar se o valor obtido é igual ao esperado
         assertEquals(valorEsperado, valorObtido)
     }
+    @Test
+    fun Testeficheiroexemplo() {
+        /** Exemplifica  a criação de entidades, atributos e relacionamentos entre eles
+        *   Criação de sting XML e escrita em ficheiro
+        */
+        // Criação de instâncias da classe Entidade com diferentes valores para os campos nome e texto
+        val e1 = Entidade("plano")
+        val e2 = Entidade("curso", "Mestrado de Engenharia Informática")
+        val e3 = Entidade("FUC")
+        val e4 = Entidade("nome", "Programação Avançada")
+        val e5 = Entidade("etcs", "6.0")
+        val e6 = Entidade("avaliação")
+        val e7 = Entidade("componente")
+        val e8 = Entidade("componente")
+        val e9 = Entidade("FUC")
+        val e10 = Entidade("nome", "Dissertação")
+        val e11 = Entidade("etcs", "42.0")
+        val e12 = Entidade("avaliação")
+        val e13 = Entidade("componente")
+        val e14 = Entidade("componente")
+        val e15 = Entidade("componente")
+        // Criação de instâncias da classe Atributo com diferentes valores para os campos nomeatrib e valor
+        val a1 = Atributo("codigo1", "M4310")
+        val a2 = Atributo("no--me", "Quizzes")
+        val a3 = Atributo("peso", "20%")
+        val a4 = Atributo("nome", "Projeto")
+        val a5 = Atributo("peso", "80%")
+        val a6 = Atributo("codigo", "03782")
+        val a7 = Atributo("nome", "Dissertação")
+        val a8 = Atributo("peso", "60%")
+        val a9 = Atributo("nome", "Apresentação")
+        val a10 = Atributo("peso", "20%")
+        val a11 = Atributo("nome", "Discussão")
+        val a12 = Atributo("peso", "20%")
+        //Criação de entidades (ponto 1 do exercicio)
+        e1.criarVariosFilhos(e2, e3, e9)
+        e3.criarVariosFilhos(e4, e5, e6)
+        e9.criarVariosFilhos(e10, e11, e12)
+        e6.criarVariosFilhos(e7, e8)
+        //  e12.criarVariosFilhos()
+        e12.criarVariosFilhos(e13, e14,e15)
+
+        //Criação de atributos (ponto 2 do exercicio)
+        e3.adicionarAtributos (a1)
+        e9.adicionarAtributos (a6)
+        e7.adicionarAtributos (a2, a3)
+        e8.adicionarAtributos (a4, a5)
+        e13.adicionarAtributos (a7, a8)
+        e14.adicionarAtributos (a9, a10)
+        e15.adicionarAtributos (a11, a12)
+
+        //Instancia um objeto documento
+        val documento = Documento("projeto.xml")
+
+        //(ponto 4 do exercicio)
+        // Escreve a estrutura da árvore de entidades e atributos em um StringBuilder como XML
+        val stringBuilder = escreverString(e1, 0,StringBuilder())
+        // Escreve o conteúdo do StringBuilder em um ficheiro XML
+        documento.escreverFicheiro(File(documento.nome), "UTF-8", "1.0",stringBuilder)
+        val ficheiro = File(documento.nome)
+        assertTrue(ficheiro.exists())
+    }
 }
 
