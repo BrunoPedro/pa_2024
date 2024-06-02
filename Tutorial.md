@@ -23,12 +23,19 @@
       - [4.vii XPath](#4vii-xpath)
       - [4.viii Escrever XML](#4viii-escrever-xml)
       - [4.ix Imprimir XML](#4ix-imprimir-xml)
+   - [5 Mapeamento de Calsses XML](#4-funções-globais)
+     - [5.i Anotacao XmlString](#4-funções-globais)
+     - [5.iii Anotacao XmlAdapter](#4-funções-globais)
+     - [5.iv Anotacao Ignore](#4-funções-globais)
+     - [5.v Anotacao Order](#4-funções-globais)
+     - [5.vi Função escreveXml](#4-funções-globais)
 
-Este guia irá cobrir todos os tópicos da biblioteca de manipulação de
+
+Este guia abrange todos os tópicos da biblioteca de manipulação de
 XML desenvolvida em Kotlin, fornecendo exemplos práticos de todas as
 funcionalidades desta API.
 
-Esta biblioteca tem três principais classes que permitem a manipulação do XML:
+A biblioteca tem três classes que permitem a manipulação do XML:
 
 - **Entidade** - Classe que permite manipular cada entidade do XML, desde
   alterar nome de cada entidade, adicionar e remover entidades
@@ -43,7 +50,7 @@ manipulação de todo o XML.
 
 A estrutura de um objeto Entidade é a seguinte:
 
-- Nome(String) - Nome da entidade, quando se instancia um objeto é feita uma validação do nome para garantir que apenas possui caracteres [a-Z], não permite caracteres especiais sendo estes removidos, no caso do nome fornecido ser nulo é chamada um exceção
+- Nome(String) - Nome da entidade, quando se instancia um objeto é feita uma validação do nome para garantir que apenas tem caracteres de [a-Z], não permite caracteres especiais sendo estes removidos, no caso do nome fornecido ser nulo é chamada um exceção
 - Texto(String) - Parâmetro opcional de uma Entidade onde se dá um
   valor descritivo da Entidade
 - Filhos(MutableList\<Entidade>) - Lista dos filhos da Entidade,
@@ -89,12 +96,12 @@ val entidadeFilho1 = Entidade("Filho 1")
 entidadeFilho1.criarPai(entidadePai)
 ```
 
-Neste exemplo são instanciadas duas entidades, de seguida é feita aligação pai filho entre elas através da função criarPai() onde a entidadePai fica definida como pai da entidadeFilho
+Neste exemplo são instanciadas duas entidades, de seguida é feita a ligação pai filho entre elas através da função criarPai() onde a entidadePai fica definida como pai da entidadeFilho
 
 ### 1.iii Definir Entidade Filho
 
 Para se definir o(s) filho(s) de uma Entidade pode ser utilizada a
-função criarVariosFilhos(),  tendo como parâmetros de entrada:
+função criarFilho(),  tendo como parâmetros de entrada:
 
 - novoFilho(Entidade) - Entidade que será Filha da entidade que se está a manipular
 
@@ -120,14 +127,14 @@ val entidade_2 = Entidade("Filho1")
 val entidade_3 = Entidade("Filho2")
 
 // Adicionar as entidades filhas à entidade pai
-e1.criarVariosFilhos(entidade_2, entidade_3)
+entidade_1.criarVariosFilhos(entidade_2, entidade_3)
 ```
 
 ### 1.iv Apagar Filhos
 
-Para remover um filho de uma dada Entidade é usada a função apagarFilho() que possui um parâmetro de entrada:
+Para apagar um filho de uma Entidade é usada a função apagarFilho() que tem um parâmetro de entrada:
 
-- entidadeFilho(Entidade) - objeto Entidade que será removida da lista de filhos de uma Entidade
+- entidadeFilho(Entidade) - objeto Entidade que será apagado da lista de filhos de uma Entidade
 
 ```Kotlin
 val entidade_Pai = Entidade("Plano")
@@ -137,15 +144,15 @@ entidade_Pai.criarFilho(entidade_Filho)
 entidade_Pai.apagarFilho(entidade_Filho)
 ```
 
-Neste exemplo é primeiro instanciado duas Entidades, depois é feita a ligação entre estas de pai e filho, por fim utiliza-se a função **apagarFilho()** para remover o Atributo **entidade_Filho** da lista de Atributos da **Entidade_Pai**.
+Neste exemplo é primeiro instanciado duas Entidades, depois é feita a ligação entre estas de pai e filho, por fim utiliza-se a função **apagarFilho()** para apagar  **entidade_Filho** da lista de filhos da **Entidade_Pai**.
 
 ### 1.v Criar Atributos
 
 Existem dois métodos de adicionar Atributos a uma Entidade.
 
-Em ambos os métodos quando a função é chamada é feita uma validação inicial que verifica se na lista de Atributos já existe um Atributo com o mesmo nome, se não existir o novo(s) Atributo(s) é/são adicionado(s) à lista, se já existir é enviada uma mensagem avisando que já existe um Atributo com esse nome e o novo Atributo **não é adicionado** à lista.
+Em ambos os métodos quando a função é chamada é feita uma validação inicial que verifica se na lista de atributos já existe um atributo com o mesmo nome. Se não existir o novo(s) atributo(s) é/são adicionado(s) à lista, se já existir é mostrada uma mensagem avisando que já existe um atributo com esse nome e o novo atributo **não é adicionado** à lista.
 
-O primeiro utiliza a função **criarAtributo()** que associa um objeto Atributo a um objeto Entidade, tendo como parâmetros de entrada:
+O primeiro método utiliza a função **criarAtributo()** que associa um objeto Atributo a um objeto Entidade, tendo como parâmetros de entrada:
 
 - nomeAtributo(String) - nome do Atributo
 - valor(String) - valor do Atributo
@@ -177,9 +184,9 @@ A diferença entre os dois métodos é que no primeiro apenas é instanciado o o
 
 ### 1.vi Apagar Atributo
 
-Para apagar um Atributo de uma Entidade é usada a função **apagarAtributoNome()**, que possui como parâmetro de entrada:
+Para apagar um Atributo de uma Entidade é usada a função **apagarAtributoNome()**, que tem como parâmetro de entrada:
 
-- nomeAtributo(String) - Nome do Atributo que será removido
+- nomeAtributo(String) - Nome do Atributo a ser apagado.
 
 ```Kotlin
 val entidade_exemplo = Entidade("FUC")
@@ -188,13 +195,13 @@ entidade_exemplo.criarAtributo("codigo1", "M4310")
 entidade_exemplo.removerAtributoNome("codigo1")
 ```
 
-Neste exemplo é instanciado um objeto Entidade e adicionado um objeto Atributo à lista de Atributos, de seguida é utilizada a função **removerAtributoNome()** com o nome "codigo1" como nome do Atributo a remover.
+Neste exemplo é instanciado um objeto Entidade e adicionado um objeto Atributo à lista de Atributos, de seguida é utilizada a função **removerAtributoNome()** com o nome "codigo1" como nome do Atributo a apagar.
 
 ## 2 Atributo
 
 A classe atributo é onde se define os atributos que serão atribuidos às diversas entidades, a sua estrutura é:
 
-- nomeatrib(String) - Nome do atributo, quando se instancia um objeto é feita uma validação do nome para garantir que apenas possui caracteres [a-Z], não permite caracteres especiais sendo estes removidos, no caso do nome fornecido ser nulo é chamada um exceção
+- nomeatrib(String) - Nome do atributo, quando se instancia um objeto é feita uma validação do nome para garantir que apenas tem caracteres de [a-Z], não permite caracteres especiais sendo estes eliminados, no caso do nome fornecido ser nulo é chamada um exceção
 - valor(String) - valor dado ao atributo
 
 ```Kotlin
@@ -207,7 +214,7 @@ Neste exemplo é instanciado um objeto Atributo, com o nome "Atributo" e valor "
 
 A classe Documento é onde se guarda o XML com as entidades e atributos após toda a sua manipulação em formato de string, a sua estrutura é:
 
-- nome(String) - Nome do atributo, quando se instancia um objeto é feita uma validação do nome para garantir que apenas possui caracteres [a-Z], não permite caracteres especiais sendo estes removidos, no caso do nome fornecido ser nulo é chamada um exceção
+- nome(String) - Nome do documento, quando se instancia um objeto é feita uma validação do nome para garantir que apenas tem caracteres de [a-Z], não permite caracteres especiais sendo estes removidos, no caso do nome fornecido ser nulo é chamada um exceção
 
 ```Kotlin
 val documento = Documento("Documento_Exemplo")
@@ -217,7 +224,7 @@ Neste exemplo é instanciado um objeto Documento, com o nome "Documento_Exemplo"
 
 ### 3.1 Escrever Ficheiro
 
-Para se escrever o ficheiro XML, é utilizada a função **escreveFicheiro()**, tendo como parâmetros de entrada:
+Para se escrever o ficheiro XML, é utilizada a função **escreveFicheiro()**, que tem como parâmetros de entrada:
 
 - ficheiro(File) - Ficheiro onde o conteúdo XML será escrito
 - tipo(String) - Tipo de codificação para o arquivo XML
@@ -236,7 +243,7 @@ val stringBuilder = escreverString(entidade, 0,StringBuilder())
 documento.escreverFicheiro(File(documento.nome), "UTF-8", "1.0",stringBuilder)
 ```
 
-Neste exemplo é instanciada uma entidade e um documento, é escrito para a variável stringBuilder o conteúdo da entidade, de seguida é utilizada a função **escreverFicheiro()** que irá escrever para dentro de um ficheiro chamado "projeto.xml", toda a informação contida na variável stringBuilder em formato XML.
+Neste exemplo é instanciada uma entidade e um documento, é escrito para a variável stringBuilder o conteúdo da entidade, de seguida é utilizada a função **escreverFicheiro()** que irá escrever no ficheiro chamado "projeto.xml", toda a informação contida na variável stringBuilder em formato XML.
 
 ## 4 Funções Globais
 
@@ -244,16 +251,16 @@ Neste exemplo é instanciada uma entidade e um documento, é escrito para a vari
 
 Para alterar o nome de uma Entidade é usada a função **alterarNomeEntidade()**, que tem como parâmetros de entrada:
 
-- Entidade(Entidade) - Objeto Entidade que irá ser alterada
+- Entidade(Entidade) - Objeto Entidade a partir do qual faz a pesquisa, por norma o 1º objeto da árvore 
 - nomeAntigo(String) - Nome da Entidade como forma de validação
 - novoNome(String) - Novo nome da Entidade
 
 ```Kotlin
-val entidade_exemplo = Entidade("FUC")
+entidade_exemplo = à 1ª entidade da árvore
 alterarNomeEntidade(entidade_exemplo, "FUC", "Curso")
 ```
 
-Neste exemplo é instanciado um objeto Entidade com o nome "FUC", de seguida é utilizada a função **alterarNomeEntidade()** para **alterar o nome** da entidade_exemplo de "FUC" para **"Curso"**.
+Neste exemplo é utilizada a função **alterarNomeEntidade()** para **alterar o nome** da entidade_exemplo de "FUC" para "Curso".
 
 ### 4.ii Apagar Entidade
 
@@ -263,7 +270,7 @@ Para apagar qualquer Entidade é utilizada a função **apagarEntidadeNome()**, 
 - nome(String) - Nome da Entidade que irá ser apagada
 
 ```Kotlin
-val entidade_exemplo = Entidade("FUC")
+entidade_exemplo = à 1ª entidade da árvore
 apagarEntidadeNome(entidade_exemplo, "FUC")
 ```
 
@@ -288,7 +295,7 @@ A diferença entre os dois métodos é que no primeiro é especificada a entidad
 
 Para apagar um atributo globlamente, ou seja, independentemente da Entidade(s) em que este exista é usada a função **apagarAtributoGlobalNome()**, que tem como parâmetros de entrada:
 
-- Entidade(Entidade) - Entidade pai a partir de onde se irá remover o atributo
+- Entidade(Entidade) - Entidade pai a partir de onde se irá pesquisar o atributo a remover 
 - Nome(String) - Nome do atributo a ser removido
 
 ```Kotlin
@@ -304,7 +311,7 @@ apagarAtributoGlobalNome(entidade_exemplo, "codigo1")
 
 Outro método para apagar um Atributo globalmente é através da função **apagarAtributoNomeEntidadeNomeAtributoGlobal()**, tem como parâmetros de entrada:
 
-- Entidade(Entidade) - Entidade pai a partir de onde se irá remover o atributo
+- Entidade(Entidade) - Entidade pai a partir de onde se irá pesquisar o atributo a remover 
 - nomEntidade(String) - Nome do Entidade
 - nomeAtributo(String) - Nome do atributo a ser removido
 
@@ -355,7 +362,7 @@ Neste exemplo são instanciadas três entidades e feita a ligação pai e filho,
 
 Para criar atributos globalmente é usada a função **criarAtributoNomeEntidadeNomeAtributoGlobal()**, tem como parâmetros de entrada:
 
-- entidade(Entidade) - Entidade raiz da árvore de entidades onde a procura começa
+- entidade(Entidade) - Entidade raiz da árvore de entidades 
 - nomeEntidade(String) - Nome da entidade onde o atributo será criado
 - nomeAtributo(String) - Nome do novo atributo a ser criado
 - valor(String) - Valor associado ao novo atributo
@@ -522,13 +529,13 @@ e3.adicionarAtributos (a1)
 val resultados = encontrarEntidadesPorXPath(e1, "FUC/etcs")
 ```
 
-Neste exemplo são instanciadas várias entidades e um atributo, feitas as ligação entre entidades pai e filho e o respetivo atributo, de seguida é utilizada a função **encontrarEntidadesPorXPath()** para guardar os valores respetivos às entidades passadas no XPath, neste caso "FUC/etcs".
+Neste exemplo são instanciadas várias entidades e um atributo, feitas as ligação entre entidades pai e filho e o respetivo atributo, de seguida é utilizada a função **encontrarEntidadesPorXPath()** para encontar os valores respetivos às entidades passadas no XPath, neste caso "FUC/etcs", ou seja retorna todos os resultados associados à pesquisa.
 
 ### 4.viii Escrever XML
 
 Para escrever toda a informação manipulada das entidades e respetivos atributos em formato XML é utilizada a função **escreverString()**, tendo como parâmetros de entrada:
 
-- entidade(Entidade) - Entidade para a qual se está a escrever a representação XML
+- entidade(Entidade) - Entidade a partir da qual se vai escrever a representação XML
 - nivel(Int) - Nível de indentação para a formatação XML
 - xmlStringBuilder(StringBuilder) - StringBuilder para acumular o conteúdo XML
 
@@ -540,7 +547,7 @@ val entidade = Entidade("Nome", "texto")
 val stringBuilder = escreverString(entidade, 0,StringBuilder())
 ```
 
-Neste exemplo é instanciada uma entidade e guardada a sua informação dentro da variável stringBuilder através da função **escreverString()** no formato String.
+Neste exemplo a função **escreverString()** vai guardar na variável stringBuilder todo o código xml referente a entidade, seus filhos e atributos.
 
 ### 4.ix Imprimir XML
 
@@ -572,3 +579,187 @@ imprimirResultados(resultados)
 ```
 
 Neste exemplo são instanciadas duas entidades e dois atributos, feita as ligação pai e filho das entidades e atribuidos os respetivos atributos, de seguida é feita uma lista dos pares entidade atributo e utilizada a função **imprimirResultados()** para escrever em formato XML essa lista.
+
+## 5 Mapeamento de Calsses XML
+
+Este módulo tem como objetivo a criação automática de entidades XML a partir de
+objetos, com base na estrutura das respectivas classes, ou seja que as classes
+do modelo possam ser instanciadas automaticamente a partir de objetos, oferecendo
+alguma flexibilidade de personalização por via de anotações nas classes.
+
+### 5.i Anotação XmlElemento
+
+Esta anotação **@XmlElemento** colocada numa classe permite alterar o nome da classe ou alterar o nome de campos da classe
+
+- XmlElemento(val name: String) - "name" é o nome a passar para dar um novo nome à classe ou aos atributos
+
+```Kotlin
+@XmlElemento(name = "componente")
+data class ComponenteAvaliacao(
+    val nome: String,
+    @XmlElemento(name = "pesoteste")
+    val peso: Int
+)
+```
+
+Neste exemplo é a anotação **@XmlElemento** altera o nome da classe de "ComponenteAvaliacao" para "componente" e o nome do atributo "peso" para "pesoteste".
+
+
+### 5.ii Anotacão XmlString
+
+Esta anotação **@XmlString**, tem um interface que converte o valor de um objeto para uma representação em string customizada. Esta interface é utilizada em conjunto com a anotação **@XmlString** para permitir a conversão customizada de propriedades para strings em classes anotadas. 
+O interface **XmlToString**, recebe um objeto genérico (Any) e retorna uma string.
+
+
+```Kotlin
+class AddPercentage : XmlToString {
+    override fun toString(obj: Any): String {
+        return obj.toString() + "%"
+    }
+}
+
+data class ComponenteAvaliacao(
+    val nome: String,
+    @XmlString(AddPercentage::class)
+    val peso: Int
+)
+```
+
+Neste exemplo foi criada uma classe **AddPercentage** que implementa o interface **XmlToString** para adicionar uma percentagem ("%") no final da string.
+Na classe "ComponenteAvaliacao", foi colocada a anotação **@XmlString**, que tem como parâmetro a classe **AddPercentage**, ou seja ao valor que o "peso" tiver é acrescentada a percentagem. Ex: 10%.
+
+
+### 5.iii Anotacão XmlAdapter
+
+Esta anotação **XmlAdapter**, tem o interface **XmlAdapterInterface** que define um adaptador XML para converter um objeto para uma entidade XML, ou seja converte um objeto de um tipo específico em uma estrutura XML customizada representada por uma entidade. 
+A função **adapt** recebe uma instância do objeto a ser adaptada e retorna uma entidade XML que representa
+a estrutura customizada do objeto na forma XML. 
+
+
+```Kotlin
+class FUCAdapter : XmlAdapterInterface<FUCA> {
+    override fun adapt(instance: FUCA): Entidade {
+        // Crie e manipule a entidade conforme necessário
+        val entidade = Entidade("FUCAdapted")
+        entidade.criarFilho(Entidade("codigoadp", instance.codigo))
+        entidade.criarFilho(Entidade("nomeadp", instance.nome))
+        entidade.criarFilho(Entidade("ectsadp", instance.ects.toString()))
+        entidade.criarFilho(Entidade("observacoesadp", instance.observacoes))
+        // Adapte outras propriedades conforme necessário
+        return entidade
+    }
+}
+
+@XmlAdapter(FUCAdapter::class)
+@XmlElemento(name = "FUCA")
+class FUCA(
+    val codigo: String,
+    val nome: String,
+    val ects: Double,
+    val observacoes: String,
+    val avaliacao: List<ComponenteAvaliacao>
+)
+
+```
+
+Neste exemplo foi criada uma classe **FUCAdapter** que implementa o interface **XmlAdapterInterface** para fornecer uma implementação personalizada que transforma os dados de uma instância FUCA em uma forma específica e diferente da representação padrão.
+Na classe "FUCA", foi colocada a anotação **@XmlAdapter**, que tem como parâmetro a classe **FUCAdapter**, ou seja  vai alterar a estrutura da classe FUCA tanto ano nível de nomes como de ordem dos atributos.
+
+
+### 5.iv Anotacão Ignore
+
+A anotação **Ignore**, serve para indicar que uma propriedade deve ser ignorada durante a instaciação ou adaptação para XML.
+Quando esta anotação estiver presente em uma propriedade, ela será excluída do resultado final do processo de serialização ou adaptação para XML.
+
+
+```Kotlin
+
+class FUC(
+    val codigo: String,
+    val nome: String,
+    val ects: Double,
+    @Ignore
+    val observacoes: String,
+    val avaliacao: List<ComponenteAvaliacao>
+)
+
+```
+
+Neste exemplo foi associada a anotação **@Ignore** ao atributo "observacoes", ou seja, o atributo "observacoes" será excluído do resultado final do processo de
+serialização ou adaptação para XML.
+
+### 5.v Anotacão Order
+
+A anotação **Order**, serve para indicar que ordem uma propriedade deve ser escrita durante a instaciação ou adaptação para XML.
+Quando esta anotação estiver presente em uma propriedade, ela será alterada em termos de posição no resultado final do processo de serialização. As propriedaes que não tenham a anotação **Order** serão escritas no final.
+
+
+```Kotlin
+
+class FUC(
+    val codigo: String,
+    @Order(3)
+    val nome: String,
+    @Order(1)
+    val ects: Double,
+    @Order(2)
+    val observacoes: String,
+    val avaliacao: List<ComponenteAvaliacao>
+)
+
+```
+
+Neste exemplo foi associada a anotação **@Order** a algumas propriedades ou seja, as proprieades serão escritas por ordem diferente no resultado final do processo de
+serialização ou adaptação para XML.
+No exemplo dado, a ordem é ects (1), observacoes (2), e nome (3), os restantes vêm na ordem do construtor.
+
+
+### 5.vi Função escreveXml
+
+A função **escreveXml**, tem como objetivo receber qualquer instância de uma classe e converte qualquer objeto em uma instância da classe "Entidade". A função permite assim, um controle detalhado sobre a geração do XML, incluindo a personalização dos nomes dos elementos, a ordem dos elementos, a transformação dos valores e a adaptação de objetos complexos.
+Funciona com as seguintes anotações se tiverem presentes no objeto passado para a função:
+- XmlElemento: Define o nome do elemento XML.
+- XmlAdapter: Converte um objeto de um tipo específico em uma estrutura XML customizada representada por uma entidade.
+- Order: Define a ordem das propriedades no XML. 
+- Ignore: Indica que a propriedade que deve ser ignorada na conversão para XML. 
+- XmlString: Define um adaptador para a conversão do valor da propriedade para string.
+
+
+```Kotlin
+
+class FUC(
+    @Igonre
+    val codigo: String,
+    @Order(3)
+    val nome: String,
+    @Order(1)
+    val ects: Double,
+    @Order(2)
+    val observacoes: String,
+    val avaliacao: List<ComponenteAvaliacao>
+)
+
+@XmlElemento(name = "componente")
+data class ComponenteAvaliacao(
+    @XmlElemento(name = "nometeste")
+    val nome: String,
+    @XmlElemento(name = "pesoteste")
+    @XmlString(AddPercentage::class)
+    val peso: Int
+)
+
+val z1 = FUC("M4310", "Programação Avançada", 6.0, "la la...",
+    listOf(
+        ComponenteAvaliacao("Quizzes", 20),
+        ComponenteAvaliacao("Projeto", 80),
+        ComponenteAvaliacao("Discussão", 40)
+    )
+)
+val e2 = z1.escreveXml()
+val stringBuilder2 = escreverString(e2, 0,StringBuilder())
+println(stringBuilder2)
+
+```
+
+Neste exemplo foram criadas duas classes, foi cria uma instância da classe FUC e atribuida à variável "Z1". A instância z1 passou a conter todos os dados fornecidos. Esta instância é convertida para XML usando a função **escreveXml**.
+Fará a escrita do XML respeitando a ordem do contrutor da "Entidade" ou em função das anotações que foram associadas às classes.
